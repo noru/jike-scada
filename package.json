@@ -2,7 +2,7 @@
   "name": "jike-scada",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/jscada.min.js",
   "scripts": {
     "dist": "rollup -c",
     "test": "karma start"
