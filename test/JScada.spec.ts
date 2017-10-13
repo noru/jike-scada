@@ -37,7 +37,7 @@ describe('JScada', () => {
 
   let webSocketSource = {
     id: 'ws-source',
-    type: < JScadaAdaptorType > 'ws',
+    type: <JScadaAdaptorType> 'ws',
     url: 'ws://localhost',
     tags: [{
         id: 'text',
@@ -54,7 +54,7 @@ describe('JScada', () => {
 
   let mqttSource = {
     id: 'mqtt-source',
-    type: < JScadaAdaptorType > 'mqtt',
+    type: <JScadaAdaptorType> 'mqtt',
     url: 'ws://localhost:3000',
     tags: [{
         id: 'text',

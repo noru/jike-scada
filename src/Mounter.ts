@@ -49,7 +49,7 @@ export default class Mounter {
                                : document.getElementById(id)
     }
     if (!this._element) {
-      throw Error(`Invalid mount point id: ${this.id}, cannot find the target element`)
+      throw Error(`Invalid mount point selector or id: ${this.selector}/${this.id}, cannot find the target element`)
     }
 
   }
