@@ -1,0 +1,65 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {
+      "variable-name": [
+        true,
+        "check-format",
+        "allow-leading-underscore",
+        "allow-trailing-underscore",
+        "allow-pascal-case",
+        "ban-keywords"
+      ],
+      "semicolon": [true, "never"],
+      "arrow-parens": false,
+      "quotemark": [true, "single", "jsx-double"],
+      "eofline": false,
+      "ordered-imports": false,
+      "prefer-const": false,
+      "trailing-comma": false,
+      "no-unused-expression": false,
+      "interface-name": false,
+      "forin": false,
+      "object-literal-sort-keys": false,
+      "no-string-literal": false,
+      "no-console": [
+        "log"
+      ],
+      "no-bitwise": false,
+      "one-variable-per-declaration": false
+    },
+    "rules": {
+      "variable-name": [
+        true,
+        "check-format",
+        "allow-leading-underscore",
+        "allow-trailing-underscore",
+        "allow-pascal-case",
+        "ban-keywords"
+      ],
+      "semicolon": [true, "never"],
+      "arrow-parens": false,
+      "quotemark": [true, "single", "jsx-double"],
+      "member-access": [true, "no-public"],
+      "eofline": false,
+      "ordered-imports": false,
+      "prefer-const": false,
+      "no-unused-expression": false,
+      "interface-name": false,
+      "forin": false,
+      "object-literal-sort-keys": false,
+      "no-string-literal": false,
+      "no-var-requires": false,
+      "no-console": [
+        "log"
+      ],
+      "no-bitwise": false,
+      "one-variable-per-declaration": false,
+      "trailing-comma": [true, {"multiline": "always", "singleline": "ignore"}],
+      "no-angle-bracket-type-assertion": false,
+      "only-arrow-functions": false
+    },
+    "rulesDirectory": []
+}
