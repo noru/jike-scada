@@ -1,7 +1,7 @@
 import { Adaptor } from './Adaptor'
 import { Observable, Subject } from '../modules/rxjs'
 import * as mqtt from 'mqtt/dist/mqtt.min'
-import { warn, debug } from '../utils'
+import { warn, debug, identity } from '../utils'
 
 interface Topic {
   name: string,
@@ -10,11 +10,10 @@ interface Topic {
 
 export default class MqttAdaptor<T> implements Adaptor<T> {
 
-  static _identity = self => self
   // tslint:disable-next-line:member-ordering
   static _defaultTopic = {
     name: '#',
-    projector: MqttAdaptor._identity,
+    projector: identity,
   }
 
   // private _type: 'json' | 'string' = 'string'
@@ -27,11 +26,13 @@ export default class MqttAdaptor<T> implements Adaptor<T> {
       warn('No topic specified, subscript to "#" (all topics)')
       topics = [ MqttAdaptor._defaultTopic ]
     }
-    topics.forEach(t => this._topics[t.name] = t.projector || MqttAdaptor._identity)
+    topics.forEach(t => this._topics[t.name] = t.projector || identity)
   }
 
   connect() {
-    this._client = mqtt.connect(this._url)
+    this._client = mqtt.connect(this._url, {
+      clientId: 'jscada_' + this._url,
+    })
     for (let t in this._topics) {
       debug('Subscribe topic: ' + t)
       this._client.subscribe(t)

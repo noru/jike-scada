@@ -2,6 +2,8 @@ import get from 'lodash.get'
 
 export * from './logging'
 
+export function identity(self) { return self }
+
 export function isUndefinedOrEmpty(arr: any[] | undefined | null) {
 
   // tslint:disable-next-line:triple-equals
