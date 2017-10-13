@@ -37,6 +37,7 @@ export interface JScadaOptions {
   sources: JScadaSource[]
 }
 
+/** Aliases */
 import RS = JScadaReadyState
 type Tag = JScadaTag
 type Type = JScadaAdaptorType
@@ -75,6 +76,7 @@ export class JScada {
   private _sources = {}
 
   private _readyState = RS.INIT
+
   get readyState() {
     return this._readyState
   }
@@ -90,7 +92,7 @@ export class JScada {
   constructor(options: Opt) {
 
     if (isUndefinedOrEmpty(options.sources)) {
-      warn(`No sources assigned. Nothing would happen. Id: ${options.id || ''}`)
+      warn(`No sources assigned. Nothing would happen. Id: ${options.id || '(not assigned)'}`)
     }
 
     merge(this._opt, options)
@@ -126,13 +128,15 @@ export class JScada {
   }
 
   suspend() {
-    // stub
+    // todo stub
     this._readyState = RS.SUSPENDED
   }
 
   close() {
     for (let s in this._sources) {
-      this._sources[s].adaptor.disconnect()
+      let source = this._sources[s]
+      source.adaptor.disconnect()
+      source.subscriptions.forEach(sub => sub.unsubscribe())
     }
     this._readyState = RS.CLOSED
   }
