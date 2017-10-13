@@ -65,7 +65,7 @@ export class JScada {
   private static _subscribe(tag: Tag, observable: Observable<any>): Subscription {
     return observable.subscribe(data => {
       if (tag._mounter === undefined) {
-        tag._mounter = new Mounter(tag.selector || tag.id, tag.type)
+        tag._mounter = new Mounter(tag.id, tag.type, tag.selector)
       }
       data = pluck(data, tag.projector || tag.path)
       tag._mounter.mount(data)

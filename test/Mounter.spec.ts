@@ -4,13 +4,13 @@ import { appendSvg } from './setup'
 describe('Mounter', () => {
 
   let removeSvg
-  before(() => {
+  beforeEach(() => {
 
     removeSvg = appendSvg()
 
   })
 
-  after(() => {
+  afterEach(() => {
 
     removeSvg()
 
@@ -43,6 +43,16 @@ describe('Mounter', () => {
     let mounter = new Mounter('shape', MounterType.color)
     mounter.mount('#333')
     expect($('#shape').attr('fill')).to.be.eq('#333')
+
+  })
+
+  it('can take selector instead of id if specified', () => {
+
+    let mounter = new Mounter('some-id', MounterType.color, 'circle')
+    mounter.mount('#333')
+    $('circle').each((i, node) => {
+      expect($(node).attr('fill')).to.be.eq('#333')
+    })
 
   })
 

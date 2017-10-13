@@ -3,6 +3,7 @@ import { spy, createFakeServer, SinonFakeServer } from 'sinon'
 import { MounterType } from '../src/Mounter'
 import { appendSvg } from './setup'
 import * as mqtt from 'mqtt/dist/mqtt.min'
+import * as _ from 'lodash'
 import MockWebSocket from './adaptor/MockWebSocket'
 
 const _respondStub = {
@@ -16,7 +17,7 @@ describe('JScada', () => {
   let removeSvg
   let httpSource = {
     id: 'http-source',
-    type: < JScadaAdaptorType > 'http',
+    type: <JScadaAdaptorType> 'http',
     url: 'http://some/url',
     params: {
       interval: 100,
@@ -191,6 +192,23 @@ describe('JScada', () => {
         expect(count).to.eq(10)
         done()
       }, 1010)
+
+    })
+
+    it('should accept selector instead of id in Tags, and update the dom correctly', (done) => {
+
+      let _httpSource = _.cloneDeep(httpSource)
+
+      _httpSource.tags[0].selector = 'text'
+
+      instance = new JScada({
+        autoStart: true,
+        sources: [_httpSource],
+      })
+      setTimeout(function() {
+        $('text').each((i, t) => expect($(t).text()).to.eq(_respondStub.text))
+        done()
+      }, 120)
 
     })
   })

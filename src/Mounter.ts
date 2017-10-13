@@ -7,36 +7,46 @@ export enum MounterType {
 export interface Option {
   id: string,
   type: MounterType,
+  selector?: string,
 }
 
 export default class Mounter {
 
-  static from({ id, type }: Option) {
-    return new Mounter(id, type)
+  static from({ id, type, selector }: Option) {
+    return new Mounter(id, type, selector)
   }
 
-  private _element: HTMLElement | null
+  private _element: HTMLElement | NodeListOf<HTMLElement> | null
   private _self: Mounter
 
-  constructor(public id: string, public type: MounterType) { }
+  constructor(public id: string, public type: MounterType, public selector?: string) { }
 
   mount(data: string) {
 
+    let processor
     switch (this.type) {
       case MounterType.text:
-        this._mountText(data)
+        processor = this._mountText
         break
       case MounterType.color:
-        this._mountColor(data)
+        processor = this._mountColor
         break
     }
 
+    this._ensureElement()
+    if ('length' in this._element!) {
+      (<NodeListOf<HTMLElement>> this._element).forEach(node => processor(node, data))
+    } else {
+      processor(this._element, data)
+    }
   }
 
   private _ensureElement = () => {
 
     if (!this._element) {
-      this._element = <HTMLElement> document.getElementById(this.id)
+      let { id, selector } = this
+      this._element = selector ? <NodeListOf<HTMLElement>> document.querySelectorAll(selector)
+                               : document.getElementById(id)
     }
     if (!this._element) {
       throw Error(`Invalid mount point id: ${this.id}, cannot find the target element`)
@@ -44,17 +54,8 @@ export default class Mounter {
 
   }
 
-  private _mountText = (data: string) => {
+  private _mountText = (node: HTMLElement, data: string) => node.innerHTML = data
 
-    this._ensureElement()
-    this._element!.innerHTML = data
+  private _mountColor = (node: HTMLElement, data: string) => node.setAttribute('fill', data)
 
-  }
-
-  private _mountColor = (data: string) => {
-
-    this._ensureElement()
-    this._element!.setAttribute('fill', data)
-
-  }
 }
