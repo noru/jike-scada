@@ -116,7 +116,8 @@ export class JScada {
         return
       }
       let adaptor = JScada._getAdaptor(source.type, source.url, source.params)
-      let observable = adaptor.connect().takeWhile(() => this.readyState === RS.READY)
+      let observable = adaptor.connect()
+                              .takeWhile(() => this.readyState === RS.READY)
       let subscriptions = source.tags.map(tag => JScada._subscribe(tag, observable))
 
       this._sources[source.id] = {

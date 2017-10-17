@@ -36,7 +36,7 @@ export default class HttpAdaptor<T> implements Adaptor<T> {
   connect() {
     this._observable = Observable.timer(0, this.interval)
       .takeUntil(this._stop$)
-      .flatMap(() => {
+      .switchMap(() => {
         return Observable.ajax(this._request)
       })
       .map(response => {
