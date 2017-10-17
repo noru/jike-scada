@@ -4,6 +4,8 @@
 <script>
 
 import JScada from '../../../../dist/jscada.js'
+import { createFakeServer, SinonFakeServer } from 'sinon'
+import _ from 'lodash'
 
 const mqttSource = {
   id: 'mqtt-source',
@@ -107,8 +109,28 @@ const mqttSource = {
   ],
 }
 
+let httpSource = _.cloneDeep(mqttSource)
+httpSource.type = 'http'
+httpSource.url = 'http://dummy.domain'
+httpSource.id = 'http-source'
+let server = createFakeServer()
+server.respondImmediately = true
+server.respondWith(JSON.stringify({
+  "a": "6",
+  "b": "19",
+  "c": "3",
+  "d": "13",
+  "e": "12",
+  "f": "3",
+  "g": "4",
+  "h": "10"
+}))
+
 export default {
   name: 'example',
+  props: [
+    'type',
+  ],
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
@@ -116,10 +138,20 @@ export default {
   },
   created: function() {
     JScada.DEBUG = true
+    let source = _getSource(this.$props.type)
     let instance = new JScada({
       autoStart: true,
-      sources: [ mqttSource ],
+      sources: [ source ],
     })
+  }
+}
+
+function _getSource(type) {
+  switch (type) {
+    case 'http':
+      return httpSource
+    case 'mqtt':
+      return mqttSource
   }
 }
 </script>
