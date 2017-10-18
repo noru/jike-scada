@@ -1,6 +1,6 @@
 # Jike-scada
 
-![sample](./example.git)
+![sample](./example.gif)
 
 ## Install
 
