@@ -4,14 +4,14 @@ import { Observable, Subscription } from './modules/rxjs'
 import Mounter, { MounterType } from './Mounter'
 import merge from 'lodash.merge'
 
-export enum JScadaReadyState {
-  INIT = 0,
-  READY = 1,
-  SUSPENDED = 2,
-  CLOSED = 3,
+export interface JScadaOptions {
+  id?: string,
+  parent?: string,
+  debug?: boolean,
+  autoStart?: boolean,
+  sources: JScadaSource[]
 }
 
-export type JScadaAdaptorType = 'http' | 'ws' | 'mqtt'
 export interface JScadaSource {
   id: string,
   type: JScadaAdaptorType,
@@ -29,13 +29,14 @@ export interface JScadaTag {
   _mounter?: Mounter,
 }
 
-export interface JScadaOptions {
-  id?: string,
-  parent?: string,
-  debug?: boolean,
-  autoStart?: boolean,
-  sources: JScadaSource[]
+export enum JScadaReadyState {
+  INIT = 0,
+  READY = 1,
+  SUSPENDED = 2,
+  CLOSED = 3,
 }
+
+export type JScadaAdaptorType = 'http' | 'ws' | 'mqtt'
 
 /** Aliases */
 import RS = JScadaReadyState
@@ -58,7 +59,7 @@ export class JScada {
     params = params || {}
     switch (type) {
       case 'http':
-        return new HttpAdaptor({ url }, params.interval)
+        return new HttpAdaptor({ url, headers: params.headers }, params.interval)
       case 'mqtt':
         return new MqttAdaptor(url, params.topics || [])  // todo, topics
       case 'ws':
