@@ -1,5 +1,7 @@
 # Jike-scada
 
+![sample](./example.git)
+
 ## Install
 
 `npm i --save noru/jike-scada`
