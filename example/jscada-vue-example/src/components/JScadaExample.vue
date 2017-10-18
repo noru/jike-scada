@@ -98,10 +98,96 @@ const mqttSource = {
   ],
 }
 
-let httpSource = _.cloneDeep(mqttSource)
-httpSource.type = 'http'
-httpSource.url = 'http://dummy.domain'
-httpSource.id = 'http-source'
+let httpSource = {
+  id: 'http-source',
+  type: 'http',
+  url: 'http://some.domain',
+  tags: [
+    {
+      id: 'path18456',
+      type: 'color',
+      projector: data => {
+        let num = +data.a
+        return num > 5 ? 'red' : 'green'
+      },
+    },
+    {
+      id: 'tspan3024',
+      type: 'text',
+      path: 'a',
+    },
+    {
+      id: 'tspan3030',
+      selector: '',
+      type: 'text',
+      path: 'b',
+    },
+    {
+      id: 'rect114817',
+      type: 'color',
+      projector: data => {
+        let num = +data.b
+        return num > 15 ? 'red' : 'green'
+      },
+    },
+    {
+      id: 'path18450',
+      type: 'color',
+      projector: data => {
+        let num = +data.c
+        return num > 15 ? 'red' : 'green'
+      },
+    },
+    {
+      id: 'tspan4162',
+      type: 'text',
+      path: 'c',
+    },
+    {
+      id: 'tspan4570',
+      type: 'text',
+      path: 'd',
+    },
+    {
+      id: 'path18452',
+      type: 'color',
+      projector: data => {
+        let num = +data.e
+        return num > 15 ? 'red' : 'green'
+      },
+    },
+    {
+      id: 'tspan4166',
+      type: 'text',
+      path: 'e',
+    },
+    {
+      id: 'tspan3042',
+      selector: '',
+      type: 'text',
+      path: 'f',
+    },
+    {
+      id: 'tspan4170',
+      type: 'text',
+      path: 'g',
+    },
+    {
+      id: 'path18454',
+      type: 'color',
+      projector: data => {
+        let num = +data.e
+        return num > 15 ? 'red' : 'green'
+      },
+    },
+    {
+      id: 'tspan3054',
+      type: 'text',
+      path: 'h',
+    },
+
+  ],
+}
 let server = createFakeServer()
 server.respondImmediately = true
 server.respondWith(JSON.stringify({
@@ -117,15 +203,17 @@ server.respondWith(JSON.stringify({
 
 export default {
   name: 'example',
+
   props: [
     'type',
   ],
+
   watch: {
     'type': function() {
-      console.log(this.$props.type);
-      this._init()
+      this.initJScada()
     }
   },
+
   mounted() {
     JScada.DEBUG = true
     this.initJScada()
@@ -134,7 +222,6 @@ export default {
   methods: {
 
     initJScada() {
-      alert()
       this._jscada && this._jscada.close()
 
       let source = _getSource(this.$props.type)

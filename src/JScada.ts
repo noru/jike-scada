@@ -72,12 +72,16 @@ export class JScada {
   private static _subscribe(tag: Tag, observable: Observable<any>): Subscription {
 
     debug(`Subscribe tag ${tag.id}`)
-
     return observable.subscribe(data => {
       if (tag._mounter === undefined) {
         tag._mounter = new Mounter(tag.id, tag.type, tag.selector)
       }
-      data = pluck(data, tag.projector || tag.path)
+      try {
+        data = pluck(data, tag.projector || tag.path)
+      } catch (e) {
+        error(e)
+        return
+      }
       tag._mounter.mount(data)
     })
 
@@ -107,7 +111,7 @@ export class JScada {
     merge(this._opt, options)
 
     if (this._opt.autoStart) {
-      debug('Auto start flag supplied, starting...')
+      debug('Auto start required, starting...')
       this.start()
     }
 

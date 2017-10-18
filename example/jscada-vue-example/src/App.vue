@@ -21,7 +21,7 @@ export default {
   data() {
 
     return {
-      type: 'mqtt',
+      type: 'http',
     }
 
   }

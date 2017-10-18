@@ -954,6 +954,13 @@ function warn(msg) {
     }
     _call.apply(void 0, ['warn', msg].concat(args));
 }
+function error(msg) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    _call.apply(void 0, ['error', msg].concat(args));
+}
 function debug(msg) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -8324,7 +8331,7 @@ var JScada$1 = /** @class */ (function () {
         }
         lodash_merge$1(this._opt, options);
         if (this._opt.autoStart) {
-            debug('Auto start flag supplied, starting...');
+            debug('Auto start required, starting...');
             this.start();
         }
     }
@@ -8357,7 +8364,13 @@ var JScada$1 = /** @class */ (function () {
             if (tag._mounter === undefined) {
                 tag._mounter = new Mounter(tag.id, tag.type, tag.selector);
             }
-            data = pluck(data, tag.projector || tag.path);
+            try {
+                data = pluck(data, tag.projector || tag.path);
+            }
+            catch (e) {
+                error(e);
+                return;
+            }
             tag._mounter.mount(data);
         });
     };
