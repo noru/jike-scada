@@ -1,4 +1,4 @@
-import { isUndefinedOrEmpty, warn, error, debugOn, pluck } from './utils'
+import { isUndefinedOrEmpty, warn, error, debug, debugOn, pluck } from './utils'
 import { HttpAdaptor, WebSocketAdaptor, MqttAdaptor, Adaptor } from './adaptor'
 import { Observable, Subscription } from './modules/rxjs'
 import Mounter, { MounterType } from './Mounter'
@@ -49,7 +49,12 @@ export class JScada {
     debugOn(on)
   }
 
+  static get DEBUG() {
+    return debugOn()
+  }
+
   private static _getAdaptor(type: Type, url: string, params?: any) {
+
     params = params || {}
     switch (type) {
       case 'http':
@@ -61,9 +66,12 @@ export class JScada {
       default:
         throw Error(`Unexpected source type: ${type}`)
     }
+
   }
 
   private static _subscribe(tag: Tag, observable: Observable<any>): Subscription {
+
+    debug(`Subscribe tag ${tag.id}`)
 
     return observable.subscribe(data => {
       if (tag._mounter === undefined) {
@@ -86,7 +94,6 @@ export class JScada {
   private _opt: Opt = {
     id: String(Math.random()).substr(2, 8),
     parent: 'body',
-    debug: false,
     autoStart: false,
     sources: [],
   }
@@ -100,6 +107,7 @@ export class JScada {
     merge(this._opt, options)
 
     if (this._opt.autoStart) {
+      debug('Auto start flag supplied, starting...')
       this.start()
     }
 
@@ -128,6 +136,7 @@ export class JScada {
     })
 
     this._readyState = RS.READY
+    debug(`JScada instance ${this._opt.id} started`)
   }
 
   suspend() {

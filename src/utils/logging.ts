@@ -23,8 +23,8 @@ function debug(msg, ...args) {
   }
 }
 
-function debugOn(on: boolean) {
-  _debug = on
+function debugOn(on?: boolean) {
+  return on === undefined ? _debug : (_debug = on)
 }
 
 function _call(name, msg, ...args) {

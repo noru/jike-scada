@@ -964,7 +964,7 @@ function debug(msg) {
     }
 }
 function debugOn(on) {
-    _debug = on;
+    return on === undefined ? _debug : (_debug = on);
 }
 function _call(name, msg) {
     var args = [];
@@ -6044,12 +6044,12 @@ var Mounter = /** @class */ (function () {
         this.type = type;
         this.selector = selector;
         this._ensureElement = function () {
-            if (!_this._element) {
+            if (!_this._isElementValid(_this._element)) {
                 var _a = _this, id = _a.id, selector = _a.selector;
                 _this._element = selector ? document.querySelectorAll(selector)
                     : document.getElementById(id);
             }
-            if (!_this._element) {
+            if (!_this._isElementValid(_this._element)) {
                 throw Error("Invalid mount point selector or id: " + _this.selector + "/" + _this.id + ", cannot find the target element");
             }
         };
@@ -6077,6 +6077,15 @@ var Mounter = /** @class */ (function () {
         else {
             processor(this._element, data);
         }
+    };
+    Mounter.prototype._isElementValid = function (element) {
+        if (element == null) {
+            return false;
+        }
+        if ('length' in element && element['length'] === 0) {
+            return false;
+        }
+        return true;
     };
     return Mounter;
 }());
@@ -8307,7 +8316,6 @@ var JScada$1 = /** @class */ (function () {
         this._opt = {
             id: String(Math.random()).substr(2, 8),
             parent: 'body',
-            debug: false,
             autoStart: false,
             sources: [],
         };
@@ -8316,10 +8324,14 @@ var JScada$1 = /** @class */ (function () {
         }
         lodash_merge$1(this._opt, options);
         if (this._opt.autoStart) {
+            debug('Auto start flag supplied, starting...');
             this.start();
         }
     }
     Object.defineProperty(JScada, "DEBUG", {
+        get: function () {
+            return debugOn();
+        },
         set: function (on) {
             debugOn(on);
         },
@@ -8340,6 +8352,7 @@ var JScada$1 = /** @class */ (function () {
         }
     };
     JScada._subscribe = function (tag, observable) {
+        debug("Subscribe tag " + tag.id);
         return observable.subscribe(function (data) {
             if (tag._mounter === undefined) {
                 tag._mounter = new Mounter(tag.id, tag.type, tag.selector);
@@ -8374,6 +8387,7 @@ var JScada$1 = /** @class */ (function () {
             };
         });
         this._readyState = RS.READY;
+        debug("JScada instance " + this._opt.id + " started");
     };
     JScada.prototype.suspend = function () {
         // todo stub

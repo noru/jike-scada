@@ -13,8 +13,7 @@ const mqttSource = {
   url: 'ws://localhost:3000',
   tags: [
     {
-      id: 'a-shape',
-      selector: 'path18456',
+      id: 'path18456',
       type: 'color',
       projector: data => {
         let num = +data.payload.a
@@ -22,20 +21,18 @@ const mqttSource = {
       },
     },
     {
-      id: 'a',
-      selector: 'tspan3024',
+      id: 'tspan3024',
       type: 'text',
       path: 'payload.a',
     },
     {
-      id: 'b',
-      selector: 'tspan3030',
+      id: 'tspan3030',
+      selector: '',
       type: 'text',
       path: 'payload.b',
     },
     {
-      id: 'b-shape',
-      selector: 'rect114817',
+      id: 'rect114817',
       type: 'color',
       projector: data => {
         let num = +data.payload.b
@@ -43,8 +40,7 @@ const mqttSource = {
       },
     },
     {
-      id: 'c-shape',
-      selector: 'path18450',
+      id: 'path18450',
       type: 'color',
       projector: data => {
         let num = +data.payload.c
@@ -52,20 +48,17 @@ const mqttSource = {
       },
     },
     {
-      id: 'c',
-      selector: 'tspan4162',
+      id: 'tspan4162',
       type: 'text',
       path: 'payload.c',
     },
     {
-      id: 'd',
-      selector: 'tspan4570',
+      id: 'tspan4570',
       type: 'text',
       path: 'payload.d',
     },
     {
-      id: 'e-shape',
-      selector: 'path18452',
+      id: 'path18452',
       type: 'color',
       projector: data => {
         let num = +data.payload.e
@@ -73,26 +66,23 @@ const mqttSource = {
       },
     },
     {
-      id: 'e',
-      selector: 'tspan4166',
+      id: 'tspan4166',
       type: 'text',
       path: 'payload.e',
     },
     {
-      id: 'f',
-      selector: 'tspan3042',
+      id: 'tspan3042',
+      selector: '',
       type: 'text',
       path: 'payload.f',
     },
     {
-      id: 'g',
-      selector: 'tspan4170',
+      id: 'tspan4170',
       type: 'text',
       path: 'payload.g',
     },
     {
-      id: 'g-shape',
-      selector: 'path18454',
+      id: 'path18454',
       type: 'color',
       projector: data => {
         let num = +data.payload.e
@@ -100,8 +90,7 @@ const mqttSource = {
       },
     },
     {
-      id: 'h',
-      selector: 'tspan3054',
+      id: 'tspan3054',
       type: 'text',
       path: 'payload.h',
     },
@@ -131,18 +120,30 @@ export default {
   props: [
     'type',
   ],
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  watch: {
+    'type': function() {
+      console.log(this.$props.type);
+      this._init()
     }
   },
-  created: function() {
+  mounted() {
     JScada.DEBUG = true
-    let source = _getSource(this.$props.type)
-    let instance = new JScada({
-      autoStart: true,
-      sources: [ source ],
-    })
+    this.initJScada()
+  },
+
+  methods: {
+
+    initJScada() {
+      alert()
+      this._jscada && this._jscada.close()
+
+      let source = _getSource(this.$props.type)
+
+      this._jscada = new JScada({
+        autoStart: true,
+        sources: [ source ],
+      })
+    },
   }
 }
 

@@ -43,12 +43,12 @@ export default class Mounter {
 
   private _ensureElement = () => {
 
-    if (!this._element) {
+    if (!this._isElementValid(this._element)) {
       let { id, selector } = this
       this._element = selector ? <NodeListOf<HTMLElement>> document.querySelectorAll(selector)
                                : document.getElementById(id)
     }
-    if (!this._element) {
+    if (!this._isElementValid(this._element)) {
       throw Error(`Invalid mount point selector or id: ${this.selector}/${this.id}, cannot find the target element`)
     }
 
@@ -58,4 +58,13 @@ export default class Mounter {
 
   private _mountColor = (node: HTMLElement, data: string) => node.setAttribute('fill', data)
 
+  private _isElementValid(element: HTMLElement | NodeListOf<HTMLElement> | null) {
+    if (element == null) {
+      return false
+    }
+    if ('length' in element && element['length'] === 0) {
+      return false
+    }
+    return true
+  }
 }
