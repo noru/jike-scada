@@ -64,7 +64,16 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'vue-svg-loader'
+        loader: 'vue-svg-loader',
+        options: {
+          svgo: {
+            plugins: [
+              {removeDoctype: true},
+              {removeComments: true},
+              {cleanupIDs: false}
+            ]
+          }
+        }
       }
     ]
   }

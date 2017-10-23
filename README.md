@@ -128,13 +128,7 @@ npm run dev
 
 1. I'm using mock http server in code(JScadaExample.vue, line 191), to see a poping data please change it to your service
 
-2. I'm using vue-svg-loader to load svg in my vue project. It strips the id from the sample svg file. To preserve the id I simply change my local `node_modules/vue-svg-loader/index.js`, line 5, to:
-
-`plugins: ['removeDoctype', 'removeComments', { cleanupIDs: false }],`
-
-see TODO item 1.
-
-3. To receive mqtt data, you have to start a local mqtt broker, and publish message to it externally.
+2. To receive mqtt data, you have to start a local mqtt broker, and publish message to it externally.
 
 To start a local broker
 ```sh
@@ -178,12 +172,7 @@ done
 ```
 
 
-
-
 TODO:
 
-1. wait for https://github.com/visualfanatic/vue-svg-loader/pull/11 to merge, currently I modify the lib directly in my /node_modules, otherwise example won't work due to missing id
-
-
-2. unit test relies on local mqtt server(ws://localhost:3000)
+1. unit test relies on local mqtt server(ws://localhost:3000)
 
