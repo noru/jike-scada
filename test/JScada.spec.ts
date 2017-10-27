@@ -1,6 +1,6 @@
 import { JScada, JScadaAdaptorType } from '../src/JScada'
 import { spy, createFakeServer, SinonFakeServer } from 'sinon'
-import { ActionType } from '../src/Mounter'
+import { ActionType } from '../src/Actions'
 import { appendSvg } from './setup'
 import * as mqtt from 'mqtt/dist/mqtt.min'
 import * as _ from 'lodash'

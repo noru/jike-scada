@@ -1,4 +1,5 @@
-import Mounter, { ActionType } from '../src/Mounter'
+import Mounter from '../src/Mounter'
+import { ActionType } from '../src/Actions'
 import { appendSvg } from './setup'
 
 describe('Mounter', () => {
