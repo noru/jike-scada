@@ -1,15 +1,13 @@
-import { warn } from './utils'
-
-export enum MounterType {
-  text = 'text',
-  fill = 'fill',
-}
+import { warn, isNodeList } from './utils'
+import Actions, { ActionType, Action } from './Actions'
 
 export interface Option {
   id: string,
-  type: MounterType,
+  type: ActionType,
   selector?: string,
 }
+
+type _Element = HTMLElement | NodeListOf<HTMLElement> | null
 
 export default class Mounter {
 
@@ -17,31 +15,28 @@ export default class Mounter {
     return new Mounter(id, type, selector)
   }
 
-  private _element: HTMLElement | NodeListOf<HTMLElement> | null
+  private _element: _Element
   private _self: Mounter
+  private _action: Action | undefined
 
-  constructor(public id: string, public type: MounterType, public selector?: string) { }
+  constructor(public id: string, public type: ActionType, public selector?: string) {
+    this._action = Actions[this.type]
+  }
 
   mount(data: string) {
 
-    let processor
-    switch (this.type) {
-      case MounterType.text:
-        processor = this._mountText
-        break
-      case MounterType.fill:
-        processor = this._mountFill
-        break
-      default:
-        warn(`Ignore tag for: unknown tag type: ${this.type}`)
+    if (this._action === undefined) {
+      warn(`Ignore tag for: unknown tag type: ${this.type}`)
+      return
     }
 
     this._ensureElement()
-    if ('length' in this._element!) {
-      (<NodeListOf<HTMLElement>> this._element).forEach(node => processor(node, data))
+    if (isNodeList(this._element)) {
+      (<NodeListOf<HTMLElement>> this._element).forEach(node => this._action!(node, data))
     } else {
-      processor(this._element, data)
+      this._action(this._element!, data)
     }
+
   }
 
   private _ensureElement = () => {
@@ -57,15 +52,11 @@ export default class Mounter {
 
   }
 
-  private _mountText = (node: HTMLElement, data: string) => node.innerHTML = data
-
-  private _mountFill = (node: HTMLElement, data: string) => node.setAttribute('fill', data)
-
-  private _isElementValid(element: HTMLElement | NodeListOf<HTMLElement> | null) {
+  private _isElementValid(element: _Element) {
     if (element == null) {
       return false
     }
-    if ('length' in element && element['length'] === 0) {
+    if (isNodeList(element) && element.length === 0) {
       return false
     }
     return true

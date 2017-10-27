@@ -1,6 +1,6 @@
 import { JScada, JScadaAdaptorType } from '../src/JScada'
 import { spy, createFakeServer, SinonFakeServer } from 'sinon'
-import { MounterType } from '../src/Mounter'
+import { ActionType } from '../src/Mounter'
 import { appendSvg } from './setup'
 import * as mqtt from 'mqtt/dist/mqtt.min'
 import * as _ from 'lodash'
@@ -24,12 +24,12 @@ describe('JScada', () => {
     },
     tags: [{
         id: 'text',
-        type: MounterType.text,
+        type: ActionType.text,
         projector: data => data.text,
       },
       {
         id: 'shape',
-        type: MounterType.fill,
+        type: ActionType.fill,
         path: 'color',
       },
     ],
@@ -41,12 +41,12 @@ describe('JScada', () => {
     url: 'ws://localhost',
     tags: [{
         id: 'text',
-        type: MounterType.text,
+        type: ActionType.text,
         projector: data => data.text,
       },
       {
         id: 'shape',
-        type: MounterType.fill,
+        type: ActionType.fill,
         path: 'color',
       },
     ],
@@ -58,12 +58,12 @@ describe('JScada', () => {
     url: 'ws://localhost:3000',
     tags: [{
         id: 'text',
-        type: MounterType.text,
+        type: ActionType.text,
         projector: data => data.payload.text,
       },
       {
         id: 'shape',
-        type: MounterType.fill,
+        type: ActionType.fill,
         path: 'payload.color',
       },
     ],

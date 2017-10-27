@@ -1,7 +1,8 @@
 import { isUndefinedOrEmpty, warn, error, debug, debugOn, pluck } from './utils'
 import { HttpAdaptor, WebSocketAdaptor, MqttAdaptor, Adaptor } from './adaptor'
 import { Observable, Subscription } from './modules/rxjs'
-import Mounter, { MounterType } from './Mounter'
+import Mounter from './Mounter'
+import { ActionType } from './Actions'
 import merge from 'lodash.merge'
 
 export interface JScadaOptions {
@@ -23,7 +24,7 @@ export interface JScadaSource {
 export interface JScadaTag {
   id: string,
   selector?: string,
-  type: MounterType,
+  type: ActionType,
   projector?: (input: any) => any,
   path?: string,
   _mounter?: Mounter,

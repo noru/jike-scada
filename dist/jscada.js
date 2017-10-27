@@ -987,6 +987,10 @@ function _call(name, msg) {
     }
 }
 
+function isNodeList(element) {
+    return 'length' in element;
+}
+
 function identity(self) { return self; }
 function isUndefinedOrEmpty(arr) {
     // tslint:disable-next-line:triple-equals
@@ -6039,16 +6043,26 @@ var WebSocketAdaptor = /** @class */ (function () {
     return WebSocketAdaptor;
 }());
 
-var MounterType;
-(function (MounterType) {
-    MounterType["text"] = "text";
-    MounterType["fill"] = "fill";
-    MounterType["stroke"] = "stoke";
-    MounterType["rotate"] = "rotate";
-    MounterType["visibility"] = "visibility";
-    MounterType["scale"] = "scale";
-    MounterType["offset"] = "offset";
-})(MounterType || (MounterType = {}));
+var ActionType;
+(function (ActionType) {
+    ActionType["text"] = "text";
+    ActionType["fill"] = "fill";
+    ActionType["stroke"] = "stoke";
+    ActionType["rotate"] = "rotate";
+    ActionType["visibility"] = "visibility";
+    ActionType["scale"] = "scale";
+    ActionType["offset"] = "offset";
+})(ActionType || (ActionType = {}));
+var Actions = (_a = {},
+    _a[ActionType.text] = function (node, data) {
+        node.innerHTML = data;
+    },
+    _a[ActionType.fill] = function (node, data) {
+        node.setAttribute('fill', data);
+    },
+    _a);
+var _a;
+
 var Mounter = /** @class */ (function () {
     function Mounter(id, type, selector) {
         var _this = this;
@@ -6065,38 +6079,31 @@ var Mounter = /** @class */ (function () {
                 throw Error("Invalid mount point selector or id: " + _this.selector + "/" + _this.id + ", cannot find the target element");
             }
         };
-        this._mountText = function (node, data) { return node.innerHTML = data; };
-        this._mountFill = function (node, data) { return node.setAttribute('fill', data); };
+        this._action = Actions[this.type];
     }
     Mounter.from = function (_a) {
         var id = _a.id, type = _a.type, selector = _a.selector;
         return new Mounter(id, type, selector);
     };
     Mounter.prototype.mount = function (data) {
-        var processor;
-        switch (this.type) {
-            case MounterType.text:
-                processor = this._mountText;
-                break;
-            case MounterType.fill:
-                processor = this._mountFill;
-                break;
-            default:
-                warn("Ignore tag for: unknown tag type: " + this.type);
+        var _this = this;
+        if (this._action === undefined) {
+            warn("Ignore tag for: unknown tag type: " + this.type);
+            return;
         }
         this._ensureElement();
-        if ('length' in this._element) {
-            this._element.forEach(function (node) { return processor(node, data); });
+        if (isNodeList(this._element)) {
+            this._element.forEach(function (node) { return _this._action(node, data); });
         }
         else {
-            processor(this._element, data);
+            this._action(this._element, data);
         }
     };
     Mounter.prototype._isElementValid = function (element) {
         if (element == null) {
             return false;
         }
-        if ('length' in element && element['length'] === 0) {
+        if (isNodeList(element) && element.length === 0) {
             return false;
         }
         return true;

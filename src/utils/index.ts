@@ -1,6 +1,7 @@
 import get from 'lodash.get'
 
 export * from './logging'
+export * from './typeGuards'
 
 export function identity(self) { return self }
 
