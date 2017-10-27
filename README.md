@@ -90,7 +90,7 @@ export interface JScadaTag {
   // if not supplied, id will be used as element id and called as:
   // `document.getElementById(id)`
   selector?: string,
-  // MounterType = 'text' | 'fill'
+  // MounterType = 'text' | 'fill' | 'stroke' | 'visible' | 'opacity'
   type: MounterType,
   // project response data to the final type. for example, if your response is:
   // {
