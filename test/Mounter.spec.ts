@@ -18,14 +18,14 @@ describe('Mounter', () => {
 
   it('can be instantiated by constructor', () => {
 
-    let mounter = new Mounter('id', MounterType.color)
+    let mounter = new Mounter('id', MounterType.fill)
     expect(mounter).to.be.not.null
 
   })
 
   it('can be instantiated by helper method: from', () => {
 
-    let mounter = Mounter.from({ id: 'id', type: MounterType.color })
+    let mounter = Mounter.from({ id: 'id', type: MounterType.fill })
     expect(mounter).to.be.not.null
 
   })
@@ -40,7 +40,7 @@ describe('Mounter', () => {
 
   it('can mount color to a <circle> if the mounter is of type "color"', () => {
 
-    let mounter = new Mounter('shape', MounterType.color)
+    let mounter = new Mounter('shape', MounterType.fill)
     mounter.mount('#333')
     expect($('#shape').attr('fill')).to.be.eq('#333')
 
@@ -48,7 +48,7 @@ describe('Mounter', () => {
 
   it('can take selector instead of id if specified', () => {
 
-    let mounter = new Mounter('some-id', MounterType.color, 'circle')
+    let mounter = new Mounter('some-id', MounterType.fill, 'circle')
     mounter.mount('#333')
     $('circle').each((i, node) => {
       expect($(node).attr('fill')).to.be.eq('#333')

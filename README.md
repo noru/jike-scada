@@ -22,7 +22,7 @@ let source = {
   tags: [
     {
       id: 'path18456',
-      type: 'color',
+      type: 'fill',
     }
   ]
 }
@@ -90,7 +90,7 @@ export interface JScadaTag {
   // if not supplied, id will be used as element id and called as:
   // `document.getElementById(id)`
   selector?: string,
-  // MounterType = 'text' | 'color'
+  // MounterType = 'text' | 'fill'
   type: MounterType,
   // project response data to the final type. for example, if your response is:
   // {

@@ -29,7 +29,7 @@ describe('JScada', () => {
       },
       {
         id: 'shape',
-        type: MounterType.color,
+        type: MounterType.fill,
         path: 'color',
       },
     ],
@@ -46,7 +46,7 @@ describe('JScada', () => {
       },
       {
         id: 'shape',
-        type: MounterType.color,
+        type: MounterType.fill,
         path: 'color',
       },
     ],
@@ -63,7 +63,7 @@ describe('JScada', () => {
       },
       {
         id: 'shape',
-        type: MounterType.color,
+        type: MounterType.fill,
         path: 'payload.color',
       },
     ],

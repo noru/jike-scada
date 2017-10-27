@@ -1,7 +1,8 @@
+import { warn } from './utils'
 
 export enum MounterType {
   text = 'text',
-  color = 'color',
+  fill = 'fill',
 }
 
 export interface Option {
@@ -28,9 +29,11 @@ export default class Mounter {
       case MounterType.text:
         processor = this._mountText
         break
-      case MounterType.color:
-        processor = this._mountColor
+      case MounterType.fill:
+        processor = this._mountFill
         break
+      default:
+        warn(`Ignore tag for: unknown tag type: ${this.type}`)
     }
 
     this._ensureElement()
@@ -56,7 +59,7 @@ export default class Mounter {
 
   private _mountText = (node: HTMLElement, data: string) => node.innerHTML = data
 
-  private _mountColor = (node: HTMLElement, data: string) => node.setAttribute('fill', data)
+  private _mountFill = (node: HTMLElement, data: string) => node.setAttribute('fill', data)
 
   private _isElementValid(element: HTMLElement | NodeListOf<HTMLElement> | null) {
     if (element == null) {

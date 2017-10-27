@@ -6042,7 +6042,12 @@ var WebSocketAdaptor = /** @class */ (function () {
 var MounterType;
 (function (MounterType) {
     MounterType["text"] = "text";
-    MounterType["color"] = "color";
+    MounterType["fill"] = "fill";
+    MounterType["stroke"] = "stoke";
+    MounterType["rotate"] = "rotate";
+    MounterType["visibility"] = "visibility";
+    MounterType["scale"] = "scale";
+    MounterType["offset"] = "offset";
 })(MounterType || (MounterType = {}));
 var Mounter = /** @class */ (function () {
     function Mounter(id, type, selector) {
@@ -6061,7 +6066,7 @@ var Mounter = /** @class */ (function () {
             }
         };
         this._mountText = function (node, data) { return node.innerHTML = data; };
-        this._mountColor = function (node, data) { return node.setAttribute('fill', data); };
+        this._mountFill = function (node, data) { return node.setAttribute('fill', data); };
     }
     Mounter.from = function (_a) {
         var id = _a.id, type = _a.type, selector = _a.selector;
@@ -6073,9 +6078,11 @@ var Mounter = /** @class */ (function () {
             case MounterType.text:
                 processor = this._mountText;
                 break;
-            case MounterType.color:
-                processor = this._mountColor;
+            case MounterType.fill:
+                processor = this._mountFill;
                 break;
+            default:
+                warn("Ignore tag for: unknown tag type: " + this.type);
         }
         this._ensureElement();
         if ('length' in this._element) {
@@ -8349,7 +8356,7 @@ var JScada$1 = /** @class */ (function () {
         params = params || {};
         switch (type) {
             case 'http':
-                return new HttpAdaptor({ url: url }, params.interval);
+                return new HttpAdaptor({ url: url, headers: params.headers }, params.interval);
             case 'mqtt':
                 return new MqttAdaptor(url, params.topics || []); // todo, topics
             case 'ws':

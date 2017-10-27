@@ -14,7 +14,7 @@ const mqttSource = {
   tags: [
     {
       id: 'path18456',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.payload.a
         return num > 5 ? 'red' : 'green'
@@ -33,7 +33,7 @@ const mqttSource = {
     },
     {
       id: 'rect114817',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.payload.b
         return num > 15 ? 'red' : 'green'
@@ -41,7 +41,7 @@ const mqttSource = {
     },
     {
       id: 'path18450',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.payload.c
         return num > 15 ? 'red' : 'green'
@@ -59,7 +59,7 @@ const mqttSource = {
     },
     {
       id: 'path18452',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.payload.e
         return num > 15 ? 'red' : 'green'
@@ -83,7 +83,7 @@ const mqttSource = {
     },
     {
       id: 'path18454',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.payload.e
         return num > 15 ? 'red' : 'green'
@@ -105,7 +105,7 @@ let httpSource = {
   tags: [
     {
       id: 'path18456',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.a
         return num > 5 ? 'red' : 'green'
@@ -124,7 +124,7 @@ let httpSource = {
     },
     {
       id: 'rect114817',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.b
         return num > 15 ? 'red' : 'green'
@@ -132,7 +132,7 @@ let httpSource = {
     },
     {
       id: 'path18450',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.c
         return num > 15 ? 'red' : 'green'
@@ -150,7 +150,7 @@ let httpSource = {
     },
     {
       id: 'path18452',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.e
         return num > 15 ? 'red' : 'green'
@@ -174,7 +174,7 @@ let httpSource = {
     },
     {
       id: 'path18454',
-      type: 'color',
+      type: 'fill',
       projector: data => {
         let num = +data.e
         return num > 15 ? 'red' : 'green'
