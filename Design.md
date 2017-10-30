@@ -22,25 +22,28 @@ To have a framework agnostic `data ` to `svg` mapping component.
   *Interface of data sources, based on Observable*
 
   **Implemented Adaptors:**
+
   - HttpAdaptor (long polling)
   - WebSocket
   - MqttAdaptor
 
 - Mounter
 
-  *Take in data from observble, redirect to action by tag type
+  *Take in data from observble, redirect to action by tag type*
 
 - Action
 
-  *Take in an HtmlElement and data to consume, perform side effect, namely update svg content, like text, fill, stroke...
+  *Take in an HtmlElement and data to consume, perform side effect, namely update svg content, like text, fill, stroke...*
 
   **Supported action**
+
   - text update
   - fill
   - stroke
   - opacity/visibility
 
   **Planned**
+
   - rotate
   - scale
   - offset
