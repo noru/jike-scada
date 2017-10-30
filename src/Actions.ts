@@ -16,17 +16,19 @@ interface Actions {
   [props: string]: Action
 }
 
+import T = ActionType
+
 const Actions: Actions = {
 
-  [ActionType.text](node: HTMLElement, data: string) {
+  [T.text](node: HTMLElement, data: string) {
     node.innerHTML = data
   },
 
-  [ActionType.fill](node: HTMLElement, data: string) {
+  [T.fill](node: HTMLElement, data: string) {
     node.setAttribute('fill', data)
   },
 
-  [ActionType.stroke](node: HTMLElement, data: any) {
+  [T.stroke](node: HTMLElement, data: any) {
 
     if (typeof data === 'string') {
       data = { color: data }
@@ -37,7 +39,7 @@ const Actions: Actions = {
 
   },
 
-  [ActionType.visible](node: HTMLElement, data: any) {
+  [T.visible](node: HTMLElement, data: any) {
     if (!!data) {
       node.removeAttribute('visibility')
     } else {
@@ -45,7 +47,7 @@ const Actions: Actions = {
     }
   },
 
-  [ActionType.opacity](node: HTMLElement, opacity: any ) {
+  [T.opacity](node: HTMLElement, opacity: any ) {
     let _opacity: any = {}
     if (typeof opacity === 'number') {
       _opacity.fill = _opacity.stroke = opacity
@@ -65,15 +67,15 @@ const Actions: Actions = {
     }
   },
 
-  [ActionType.rotate](node: HTMLElement, opacity: any ) {
+  [T.rotate](node: HTMLElement, opacity: any ) {
     throw new Error('Not Implemented')
   },
 
-  [ActionType.scale](node: HTMLElement, opacity: any ) {
+  [T.scale](node: HTMLElement, opacity: any ) {
     throw new Error('Not Implemented')
   },
 
-  [ActionType.offset](node: HTMLElement, opacity: any ) {
+  [T.offset](node: HTMLElement, opacity: any ) {
     throw new Error('Not Implemented')
   },
 
