@@ -3,8 +3,7 @@ import jQuery from 'jquery'
 
 window.$ = jQuery
 
-export function appendSvg() {
-  let svg = `
+export const SvgString = `
   <svg id="svg">
     <text id="text"></text>
     <text id="text2"></text>
@@ -14,9 +13,12 @@ export function appendSvg() {
     <circle id="shape2" />
     <circle id="shape3" />
     <circle id="shape4" />
+    <image />
   </svg>
   `
-  $(svg).appendTo($('body'))
+
+export function appendSvg() {
+  $(SvgString).appendTo($('body'))
 
   return () => $('#svg').remove()
 }

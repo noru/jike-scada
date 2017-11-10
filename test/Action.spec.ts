@@ -1,10 +1,11 @@
 import Actions, { ActionType } from '../src/Actions'
+import { SvgString } from './setup'
 
-describe.only('Actions', () => {
+describe('Actions', () => {
 
   let el, $el
   beforeEach(() => {
-    $el = $('<div></div>')
+    $el = $(SvgString)
     el = $el[0]
   })
 
@@ -20,21 +21,67 @@ describe.only('Actions', () => {
 
   })
 
-  it(ActionType.fill, () => {
+  it(ActionType.fill + ': single node', () => {
 
-    Actions[ActionType.fill](el, '#333')
-    expect($el.attr('fill')).to.eq('#333')
+    let text = $el.find('text')
+    Actions[ActionType.fill](text[0], '#333')
+    expect(text.attr('fill')).to.eq('#333')
+
+    let shape = $el.find('circle')
+    Actions[ActionType.fill](shape[0], '#333')
+    expect(shape.attr('fill')).to.eq('#333')
+
+    let nonSupport = $el.find('image')
+    Actions[ActionType.fill](nonSupport[0], '#333')
+    expect(nonSupport.attr('fill')).to.not.eq('#333')
 
   })
 
-  it(ActionType.stroke, () => {
+  it(ActionType.fill + ': container', () => {
+
+    Actions[ActionType.fill](el, '#333')
+    $el.children().each((i, node) => {
+      if (node.tagName !== 'image') {
+        expect($(node).attr('fill')).to.eq('#333')
+      }
+    })
+
+  })
+
+  it(ActionType.stroke + ': single node', () => {
+
+    let text = $el.find('text')
+
+    Actions[ActionType.stroke](text[0], 'red')
+    expect(text.attr('stroke')).to.eq('red')
+
+    let shape = $el.find('circle')
+    Actions[ActionType.stroke](shape[0], { color: 'green', width: 7 })
+    expect(shape.attr('stroke')).to.eq('green')
+    expect(shape.attr('stroke-width')).to.eq('7')
+
+    let nonSupport = $el.find('image')
+    Actions[ActionType.stroke](nonSupport[0], '#333')
+    expect(nonSupport.attr('stroke')).to.not.eq('#333')
+
+  })
+
+  it(ActionType.stroke + ': container', () => {
 
     Actions[ActionType.stroke](el, 'red')
-    expect($el.attr('stroke')).to.eq('red')
+    $el.children().each((i, node) => {
+      if (node.tagName !== 'image') {
+        expect($(node).attr('stroke')).to.eq('red')
+      }
+    })
 
     Actions[ActionType.stroke](el, { color: 'green', width: 7 })
-    expect($el.attr('stroke')).to.eq('green')
-    expect($el.attr('stroke-width')).to.eq('7')
+    $el.children().each((i, node) => {
+      if (node.tagName !== 'image') {
+        expect($(node).attr('stroke')).to.eq('green')
+        expect($(node).attr('stroke-width')).to.eq('7')
+      }
+    })
 
   })
 

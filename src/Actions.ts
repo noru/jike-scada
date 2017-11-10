@@ -1,4 +1,5 @@
-import * as transform from 'd3-transform'
+
+import { warn } from './utils'
 
 export enum ActionType {
   text = 'text',
@@ -10,6 +11,32 @@ export enum ActionType {
   scale = 'scale',
   offset = 'offset',
 }
+/** Reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Element */
+const _container = ['svg', 'a', 'g']
+const _shape = ['path', 'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon']
+const _text = ['altGlyph', 'textPath', 'text', 'tref', 'tspan']
+const CONTAINTER = new Set(_container)
+const CONTAINTER_SELECTOR = _container.join(',')
+const SHAPE = new Set(_shape)
+const SHAPE_SELECTOR = _shape.join(',')
+const TEXT = new Set(_text)
+const TEXT_SELECTOR = _text.join(',')
+
+function isContainer(node: HTMLElement) {
+  return CONTAINTER.has(node.tagName)
+}
+
+function isText(node: HTMLElement) {
+  return TEXT.has(node.tagName)
+}
+
+function isSHAPE(node: HTMLElement) {
+  return SHAPE.has(node.tagName)
+}
+
+// graphics element
+// One of the element types that can cause graphics to be drawn onto the target canvas.
+// Specifically: ‘circle’, ‘ellipse’, ‘image’, ‘line’, ‘path’, ‘polygon’, ‘polyline’, ‘rect’, ‘text’ and ‘use’.
 
 export type Action = (node: HTMLElement, data: any) => void
 interface Actions {
@@ -25,17 +52,41 @@ const Actions: Actions = {
   },
 
   [T.fill](node: HTMLElement, data: string) {
-    node.setAttribute('fill', data)
+
+    if (isContainer(node)) {
+      node.querySelectorAll(SHAPE_SELECTOR + ',' + TEXT_SELECTOR)
+          .forEach(n => n.setAttribute('fill', data))
+      return
+    }
+
+    if (isText(node) || isSHAPE(node)) {
+      node.setAttribute('fill', data)
+    } else {
+      warn(`Tag <${node.tagName}> doen't support 'fill' attribute. It has to be a text/shape element.`)
+    }
   },
 
   [T.stroke](node: HTMLElement, data: any) {
 
+    function setStroke(n: Element, strokeValue: { color: string, width: string }) {
+      n.setAttribute('stroke', data.color)
+      strokeValue.width && n.setAttribute('stroke-width', strokeValue.width)
+    }
+
     if (typeof data === 'string') {
       data = { color: data }
     }
-    node.setAttribute('stroke', data.color)
-    data.width && node.setAttribute('stroke-width', data.width)
-    // others?
+    if (isContainer(node)) {
+      node.querySelectorAll(SHAPE_SELECTOR + ',' + TEXT_SELECTOR)
+          .forEach(n => setStroke(n, data))
+      return
+    }
+
+    if (isText(node) || isSHAPE(node)) {
+      setStroke(node, data)
+    } else {
+      warn(`Tag <${node.tagName}> doen't support 'stroke' attribute. It has to be a text/shape element.`)
+    }
 
   },
 

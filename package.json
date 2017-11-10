@@ -33,9 +33,11 @@
     "tslint": "^5.7.0"
   },
   "dependencies": {
+    "es6-set": "^0.1.5",
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.0",
     "mqtt": "^2.13.0",
+    "nodelist-foreach-polyfill": "^1.2.0",
     "rxjs": "^5.4.3"
   }
 }

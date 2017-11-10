@@ -6,10 +6,7 @@ export * from './typeGuards'
 export function identity(self) { return self }
 
 export function isUndefinedOrEmpty(arr: any[] | undefined | null) {
-
-  // tslint:disable-next-line:triple-equals
-  return arr == undefined || arr.length === 0
-
+  return arr === null || arr === undefined || arr.length === 0
 }
 
 export function pluck(data: any, projectorOrPath?: ((i: any) => any) | string | undefined) {
