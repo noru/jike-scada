@@ -123,7 +123,7 @@ let httpSource = {
       path: 'b',
     },
     {
-      id: 'rect114817',
+      id: 'g78096',
       type: 'fill',
       projector: data => {
         let num = +data.b
