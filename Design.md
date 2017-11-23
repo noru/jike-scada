@@ -26,6 +26,8 @@ To have a framework agnostic `data ` to `svg` mapping component.
   - HttpAdaptor (long polling)
   - WebSocket
   - MqttAdaptor
+  - ManualAdaptor (feed data manually)
+
 
 - Mounter
 
@@ -50,8 +52,8 @@ To have a framework agnostic `data ` to `svg` mapping component.
 
 TODO:
 
+- style vs attribute
 - send message to data source
 - documentation
 - live example
 - support more means to manipulate svg elements
-- fix bugs

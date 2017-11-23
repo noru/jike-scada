@@ -9832,6 +9832,39 @@ function stubFalse() {
 module.exports = merge;
 });
 
+var ManualAdaptor = /** @class */ (function () {
+    function ManualAdaptor(_projector) {
+        this._projector = _projector;
+        // private _type: 'json' | 'string' = 'string'
+        this._stop$ = new Subject_2();
+        this._manual$ = new Subject_2();
+    }
+    ManualAdaptor.prototype.connect = function () {
+        var _this = this;
+        return this._manual$
+            .takeUntil(this._stop$)
+            .map(function (message) {
+            if (_this._projector) {
+                return _this._projector(message);
+            }
+            else {
+                return message;
+            }
+        })
+            .share();
+    };
+    ManualAdaptor.prototype.disconnect = function () {
+        this._stop$.next(true);
+    };
+    ManualAdaptor.prototype.feed = function (data) {
+        this._manual$.next(data);
+    };
+    ManualAdaptor.prototype.send = function (message) {
+        // todo, stub
+    };
+    return ManualAdaptor;
+}());
+
 var JScadaReadyState;
 (function (JScadaReadyState) {
     JScadaReadyState[JScadaReadyState["INIT"] = 0] = "INIT";
@@ -9880,7 +9913,8 @@ var JScada$1 = /** @class */ (function () {
             case 'ws':
                 return new WebSocketAdaptor(url);
             default:
-                throw Error("Unexpected source type: " + type);
+                debug("Use manual adaptro for " + type + ":" + url);
+                return new ManualAdaptor();
         }
     };
     JScada._subscribe = function (tag, observable) {
@@ -9938,6 +9972,15 @@ var JScada$1 = /** @class */ (function () {
             source.subscriptions.forEach(function (sub) { return sub.unsubscribe(); });
         }
         this._readyState = RS.CLOSED;
+    };
+    JScada.prototype.feed = function (sourceId, data) {
+        var source = this._sources[sourceId];
+        if (source && source.adaptor.constructor === ManualAdaptor) {
+            source.adaptor.feed(data);
+        }
+        else {
+            warn("No suitable source found for feeding by id " + sourceId);
+        }
     };
     return JScada;
 }());

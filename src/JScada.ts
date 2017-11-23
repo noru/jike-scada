@@ -16,7 +16,7 @@ export interface JScadaOptions {
 export interface JScadaSource {
   id: string,
   type: JScadaAdaptorType,
-  url: string,
+  url?: string,
   tags: JScadaTag[],
   params?: any,
 }
@@ -37,10 +37,11 @@ export enum JScadaReadyState {
   CLOSED = 3,
 }
 
-export type JScadaAdaptorType = 'http' | 'ws' | 'mqtt'
+export type JScadaAdaptorType = 'http' | 'ws' | 'mqtt' | 'manual'
 
 /** Aliases */
 import RS = JScadaReadyState
+import ManualAdaptor from './adaptor/ManualAdaptor'
 type Tag = JScadaTag
 type Type = JScadaAdaptorType
 type Opt = JScadaOptions
@@ -55,18 +56,19 @@ export class JScada {
     return debugOn()
   }
 
-  private static _getAdaptor(type: Type, url: string, params?: any) {
+  private static _getAdaptor(type: Type, url?: string, params?: any) {
 
     params = params || {}
     switch (type) {
       case 'http':
-        return new HttpAdaptor({ url, headers: params.headers }, params.interval)
+        return new HttpAdaptor({ url: url!, headers: params.headers }, params.interval)
       case 'mqtt':
-        return new MqttAdaptor(url, params.topics || [])  // todo, topics
+        return new MqttAdaptor(url!, params.topics || [])  // todo, topics
       case 'ws':
-        return new WebSocketAdaptor(url)
+        return new WebSocketAdaptor(url!)
       default:
-        throw Error(`Unexpected source type: ${type}`)
+        debug(`Use manual adaptro for ${type}:${url}`)
+        return new ManualAdaptor()
     }
 
   }
@@ -157,6 +159,15 @@ export class JScada {
       source.subscriptions.forEach(sub => sub.unsubscribe())
     }
     this._readyState = RS.CLOSED
+  }
+
+  feed(sourceId: string, data: any) {
+    let source = this._sources[sourceId]
+    if (source && source.adaptor.constructor === ManualAdaptor ) {
+      source.adaptor.feed(data)
+    } else {
+      warn(`No suitable source found for feeding by id ${sourceId}`)
+    }
   }
 
 }

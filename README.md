@@ -63,7 +63,7 @@ export interface JScadaSource {
 
   // source id, must be unique within one instance
   id: string,
-  // JScadaAdaptorType = 'http' | 'ws' | 'mqtt'
+  // JScadaAdaptorType = 'http' | 'ws' | 'mqtt' | 'manual'
   type: JScadaAdaptorType,
   // e.g. ws://my.host.com:3000 or http://my.host.com/api
   url: string,

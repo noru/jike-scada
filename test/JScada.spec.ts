@@ -15,6 +15,22 @@ describe('JScada', () => {
 
   let server: SinonFakeServer
   let removeSvg
+  let manualSource = {
+    id: 'manual-source',
+    type: <JScadaAdaptorType> 'manual',
+    tags: [{
+        id: 'text',
+        type: ActionType.text,
+        projector: data => data.text,
+      },
+      {
+        id: 'shape',
+        type: ActionType.fill,
+        path: 'color',
+      },
+    ],
+  }
+
   let httpSource = {
     id: 'http-source',
     type: <JScadaAdaptorType> 'http',
@@ -310,6 +326,25 @@ describe('JScada', () => {
       inst.close()
 
     }).timeout(5000)
+
+  })
+
+  describe('Manual source', () => {
+
+    it ('should accept Manual source, update the dom correctly', () => {
+
+      let inst = new JScada({
+        autoStart: true,
+        sources: [ manualSource ],
+      })
+
+      inst.feed('invalid-id', _respondStub)
+      expect($('#text').text()).to.eq('')
+
+      inst.feed('manual-source', _respondStub)
+      expect($('#text').text()).to.eq(_respondStub.text)
+      expect($('#shape').attr('fill')).to.eq(_respondStub.color)
+    })
 
   })
 
