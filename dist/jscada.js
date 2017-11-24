@@ -2440,7 +2440,7 @@ function getSvgDOM(ele) {
         return ele;
     }
     if (ele.tagName === 'EMBED') {
-        return ele.getSVGDocument;
+        return function () { return ele.getSVGDocument(); };
     }
     return document;
 }
