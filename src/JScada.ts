@@ -152,12 +152,14 @@ export class JScada {
   }
 
   feed(sourceId: string, data: any) {
+
     let source = this._sources[sourceId]
     if (source && source.adaptor.constructor === ManualAdaptor ) {
       source.adaptor.feed(data)
     } else {
       warn(`No suitable source found for feeding by id ${sourceId}`)
     }
+
   }
 
   private _subscribe(tag: Tag, observable: Observable<any>): Subscription {

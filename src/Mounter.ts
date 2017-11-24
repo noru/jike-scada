@@ -1,4 +1,4 @@
-import { warn, isNodeList } from './utils'
+import { warn, isNodeList, isFunction } from './utils'
 import Actions, { ActionType, Action } from './Actions'
 
 type _Element = HTMLElement | NodeListOf<HTMLElement> | null
@@ -13,7 +13,7 @@ export default class Mounter {
     public id: string,
     public type: ActionType,
     public selector?: string,
-    private _DOM: Document = document) {
+    private _DOM: Document | (() => Document) = document) {
     this._action = Actions[this.type]
   }
 
@@ -37,6 +37,9 @@ export default class Mounter {
 
     if (!this._isElementValid(this._element)) {
       let { id, selector, _DOM } = this
+      if (isFunction(_DOM)) {
+        _DOM = _DOM()
+      }
       this._element = selector ? <NodeListOf<HTMLElement>> _DOM.querySelectorAll(selector)
                                : _DOM.getElementById(id)
     }

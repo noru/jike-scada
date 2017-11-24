@@ -2414,6 +2414,9 @@ function _call(name, msg) {
 function isNodeList(element) {
     return 'length' in element;
 }
+function isFunction$4(element) {
+    return typeof element === 'function';
+}
 
 function identity(self) { return self; }
 function isUndefinedOrEmpty(arr) {
@@ -2437,7 +2440,7 @@ function getSvgDOM(ele) {
         return ele;
     }
     if (ele.tagName === 'EMBED') {
-        return ele.getSVGDocument();
+        return ele.getSVGDocument;
     }
     return document;
 }
@@ -2467,10 +2470,10 @@ var root$1 = {
 };
 
 "use strict";
-function isFunction$4(x) {
+function isFunction$5(x) {
     return typeof x === 'function';
 }
-var isFunction_2 = isFunction$4;
+var isFunction_2 = isFunction$5;
 
 
 var isFunction_1 = {
@@ -7598,6 +7601,9 @@ var Mounter = /** @class */ (function () {
         this._ensureElement = function () {
             if (!_this._isElementValid(_this._element)) {
                 var _a = _this, id = _a.id, selector = _a.selector, _DOM = _a._DOM;
+                if (isFunction$4(_DOM)) {
+                    _DOM = _DOM();
+                }
                 _this._element = selector ? _DOM.querySelectorAll(selector)
                     : _DOM.getElementById(id);
             }
