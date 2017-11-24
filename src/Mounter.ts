@@ -1,4 +1,4 @@
-import { warn, isNodeList, isFunction } from './utils'
+import { warn, error, isNodeList, isFunction } from './utils'
 import Actions, { ActionType, Action } from './Actions'
 
 type _Element = HTMLElement | NodeListOf<HTMLElement> | null
@@ -25,10 +25,16 @@ export default class Mounter {
     }
 
     this._ensureElement()
+
+    if (!this._isElementValid(this._element)) {
+      error(`Invalid mount point id or selector: ${this.id}/${this.selector}, cannot find the target element`)
+      return
+    }
+
     if (isNodeList(this._element)) {
       (<NodeListOf<HTMLElement>> this._element).forEach(node => this._action!(node, data))
     } else {
-      this._action(this._element!, data)
+      this._element && this._action(this._element!, data)
     }
 
   }
@@ -42,9 +48,6 @@ export default class Mounter {
       }
       this._element = selector ? <NodeListOf<HTMLElement>> _DOM.querySelectorAll(selector)
                                : _DOM.getElementById(id)
-    }
-    if (!this._isElementValid(this._element)) {
-      throw Error(`Invalid mount point id or selector: ${this.id}/${this.selector}, cannot find the target element`)
     }
 
   }

@@ -7607,9 +7607,6 @@ var Mounter = /** @class */ (function () {
                 _this._element = selector ? _DOM.querySelectorAll(selector)
                     : _DOM.getElementById(id);
             }
-            if (!_this._isElementValid(_this._element)) {
-                throw Error("Invalid mount point id or selector: " + _this.id + "/" + _this.selector + ", cannot find the target element");
-            }
         };
         this._action = Actions[this.type];
     }
@@ -7620,11 +7617,15 @@ var Mounter = /** @class */ (function () {
             return;
         }
         this._ensureElement();
+        if (!this._isElementValid(this._element)) {
+            error("Invalid mount point id or selector: " + this.id + "/" + this.selector + ", cannot find the target element");
+            return;
+        }
         if (isNodeList(this._element)) {
             this._element.forEach(function (node) { return _this._action(node, data); });
         }
         else {
-            this._action(this._element, data);
+            this._element && this._action(this._element, data);
         }
     };
     Mounter.prototype._isElementValid = function (element) {
