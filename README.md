@@ -29,6 +29,7 @@ let source = {
 
 let JScadaOptions = {
   autoStart: true,
+  svg: '#svg-container', // <svg> or <embed> element selector
   sources: [ source ],
 }
 
@@ -45,14 +46,14 @@ The defination of `OPTIONS` is down below. Check the [example](#example) for mor
 ```typescript
 
 export interface JScadaOptions {
+  // <svg> or <embed> element selector
+  svg: string,
   // see JScadaSource
   sources: JScadaSource[]
 
   /* optional */
   // instance id, will automatically generated if not supplied
   id?: string,
-  // currently no use
-  parent?: string = 'body',
   // out debug message or not
   debug?: boolean = false,
    // if not, you have to call `instance.start()` yourself to start receiving data
