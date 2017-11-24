@@ -13,7 +13,7 @@ export default class Mounter {
     public id: string,
     public type: ActionType,
     public selector?: string,
-    private _document: Document = document) {
+    private _DOM: Document = document) {
     this._action = Actions[this.type]
   }
 
@@ -36,9 +36,9 @@ export default class Mounter {
   private _ensureElement = () => {
 
     if (!this._isElementValid(this._element)) {
-      let { id, selector, _document } = this
-      this._element = selector ? <NodeListOf<HTMLElement>> _document.querySelectorAll(selector)
-                               : _document.getElementById(id)
+      let { id, selector, _DOM } = this
+      this._element = selector ? <NodeListOf<HTMLElement>> _DOM.querySelectorAll(selector)
+                               : _DOM.getElementById(id)
     }
     if (!this._isElementValid(this._element)) {
       throw Error(`Invalid mount point id or selector: ${this.id}/${this.selector}, cannot find the target element`)

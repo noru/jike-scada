@@ -1,4 +1,4 @@
-import { isUndefinedOrEmpty, warn, error, debug, debugOn, pluck } from './utils'
+import { isUndefinedOrEmpty, warn, error, debug, debugOn, pluck, getSvgDOM } from './utils'
 import { HttpAdaptor, WebSocketAdaptor, MqttAdaptor, Adaptor } from './adaptor'
 import { Observable, Subscription } from './modules/rxjs'
 import Mounter from './Mounter'
@@ -7,7 +7,7 @@ import merge from 'lodash.merge'
 
 export interface JScadaOptions {
   id?: string,
-  parent?: string,
+  svg: string,
   debug?: boolean,
   autoStart?: boolean,
   sources: JScadaSource[]
@@ -66,59 +66,49 @@ export class JScada {
         return new MqttAdaptor(url!, params.topics || [])  // todo, topics
       case 'ws':
         return new WebSocketAdaptor(url!)
+      case 'manual':
+        return new ManualAdaptor()
       default:
-        debug(`Use manual adaptro for ${type}:${url}`)
+        debug(`Use manual adaptor for ${type}:${url}`)
         return new ManualAdaptor()
     }
 
   }
 
-  private static _subscribe(tag: Tag, observable: Observable<any>): Subscription {
-
-    debug(`Subscribe tag ${tag.id}`)
-    return observable.subscribe(data => {
-      if (tag._mounter === undefined) {
-        tag._mounter = new Mounter(tag.id, tag.type, tag.selector)
-      }
-      try {
-        data = pluck(data, tag.projector || tag.path)
-      } catch (e) {
-        error(e)
-        return
-      }
-      tag._mounter.mount(data)
-    })
-
+  private _opt: Opt = {
+    id: String(Math.random()).substr(2, 8),
+    svg: 'body',
+    autoStart: false,
+    sources: [],
   }
+
+  private _DOM = document
 
   private _sources = {}
 
   private _readyState = RS.INIT
 
-  get readyState() {
-    return this._readyState
-  }
-
-  private _opt: Opt = {
-    id: String(Math.random()).substr(2, 8),
-    parent: 'body',
-    autoStart: false,
-    sources: [],
-  }
-
   constructor(options: Opt) {
 
+    merge(this._opt, options)
+
     if (isUndefinedOrEmpty(options.sources)) {
-      warn(`No sources assigned. Nothing would happen. Id: ${options.id || '(not assigned)'}`)
+      warn(`No sources assigned. Nothing would happen. Option: ${JSON.stringify(this._opt)}`)
     }
 
-    merge(this._opt, options)
+    let svg = document.querySelector(this._opt.svg)
+
+    this._DOM = getSvgDOM(svg)
 
     if (this._opt.autoStart) {
       debug('Auto start required, starting...')
       this.start()
     }
 
+  }
+
+  get readyState() {
+    return this._readyState
   }
 
   start() {
@@ -134,7 +124,7 @@ export class JScada {
       let adaptor = JScada._getAdaptor(source.type, source.url, source.params)
       let observable = adaptor.connect()
                               .takeWhile(() => this.readyState === RS.READY)
-      let subscriptions = source.tags.map(tag => JScada._subscribe(tag, observable))
+      let subscriptions = source.tags.map(tag => this._subscribe(tag, observable))
 
       this._sources[source.id] = {
         adaptor,
@@ -168,6 +158,24 @@ export class JScada {
     } else {
       warn(`No suitable source found for feeding by id ${sourceId}`)
     }
+  }
+
+  private _subscribe(tag: Tag, observable: Observable<any>): Subscription {
+
+    debug(`Subscribe tag ${tag.id}`)
+    return observable.subscribe(data => {
+      if (tag._mounter === undefined) {
+        tag._mounter = new Mounter(tag.id, tag.type, tag.selector, this._DOM)
+      }
+      try {
+        data = pluck(data, tag.projector || tag.path)
+      } catch (e) {
+        error(e)
+        return
+      }
+      tag._mounter.mount(data)
+    })
+
   }
 
 }

@@ -2428,6 +2428,19 @@ function pluck(data, projectorOrPath) {
     }
     return data;
 }
+function getSvgDOM(ele) {
+    if (ele === null) {
+        warn('No svg document found, use "document" as default');
+        return document;
+    }
+    if (ele.tagName === 'svg') {
+        return ele;
+    }
+    if (ele.tagName === 'embed') {
+        return ele.getSVGDocument();
+    }
+    return document;
+}
 
 "use strict";
 // CommonJS / Node have global context exposed as "global" variable.
@@ -7575,27 +7588,25 @@ var Actions = (_a = {},
 var _a;
 
 var Mounter = /** @class */ (function () {
-    function Mounter(id, type, selector) {
+    function Mounter(id, type, selector, _DOM) {
+        if (_DOM === void 0) { _DOM = document; }
         var _this = this;
         this.id = id;
         this.type = type;
         this.selector = selector;
+        this._DOM = _DOM;
         this._ensureElement = function () {
             if (!_this._isElementValid(_this._element)) {
-                var _a = _this, id = _a.id, selector = _a.selector;
-                _this._element = selector ? document.querySelectorAll(selector)
-                    : document.getElementById(id);
+                var _a = _this, id = _a.id, selector = _a.selector, _DOM = _a._DOM;
+                _this._element = selector ? _DOM.querySelectorAll(selector)
+                    : _DOM.getElementById(id);
             }
             if (!_this._isElementValid(_this._element)) {
-                throw Error("Invalid mount point selector or id: " + _this.selector + "/" + _this.id + ", cannot find the target element");
+                throw Error("Invalid mount point id or selector: " + _this.id + "/" + _this.selector + ", cannot find the target element");
             }
         };
         this._action = Actions[this.type];
     }
-    Mounter.from = function (_a) {
-        var id = _a.id, type = _a.type, selector = _a.selector;
-        return new Mounter(id, type, selector);
-    };
     Mounter.prototype.mount = function (data) {
         var _this = this;
         if (this._action === undefined) {
@@ -9876,18 +9887,21 @@ var JScadaReadyState;
 var RS = JScadaReadyState;
 var JScada$1 = /** @class */ (function () {
     function JScada(options) {
-        this._sources = {};
-        this._readyState = RS.INIT;
         this._opt = {
             id: String(Math.random()).substr(2, 8),
-            parent: 'body',
+            svg: 'body',
             autoStart: false,
             sources: [],
         };
-        if (isUndefinedOrEmpty(options.sources)) {
-            warn("No sources assigned. Nothing would happen. Id: " + (options.id || '(not assigned)'));
-        }
+        this._DOM = document;
+        this._sources = {};
+        this._readyState = RS.INIT;
         lodash_merge$1(this._opt, options);
+        if (isUndefinedOrEmpty(options.sources)) {
+            warn("No sources assigned. Nothing would happen. Option: " + JSON.stringify(this._opt));
+        }
+        var svg = document.querySelector(this._opt.svg);
+        this._DOM = getSvgDOM(svg);
         if (this._opt.autoStart) {
             debug('Auto start required, starting...');
             this.start();
@@ -9912,26 +9926,12 @@ var JScada$1 = /** @class */ (function () {
                 return new MqttAdaptor(url, params.topics || []); // todo, topics
             case 'ws':
                 return new WebSocketAdaptor(url);
+            case 'manual':
+                return new ManualAdaptor();
             default:
-                debug("Use manual adaptro for " + type + ":" + url);
+                debug("Use manual adaptor for " + type + ":" + url);
                 return new ManualAdaptor();
         }
-    };
-    JScada._subscribe = function (tag, observable) {
-        debug("Subscribe tag " + tag.id);
-        return observable.subscribe(function (data) {
-            if (tag._mounter === undefined) {
-                tag._mounter = new Mounter(tag.id, tag.type, tag.selector);
-            }
-            try {
-                data = pluck(data, tag.projector || tag.path);
-            }
-            catch (e) {
-                error(e);
-                return;
-            }
-            tag._mounter.mount(data);
-        });
     };
     Object.defineProperty(JScada.prototype, "readyState", {
         get: function () {
@@ -9951,7 +9951,7 @@ var JScada$1 = /** @class */ (function () {
             var adaptor = JScada._getAdaptor(source.type, source.url, source.params);
             var observable = adaptor.connect()
                 .takeWhile(function () { return _this.readyState === RS.READY; });
-            var subscriptions = source.tags.map(function (tag) { return JScada._subscribe(tag, observable); });
+            var subscriptions = source.tags.map(function (tag) { return _this._subscribe(tag, observable); });
             _this._sources[source.id] = {
                 adaptor: adaptor,
                 observable: observable,
@@ -9981,6 +9981,23 @@ var JScada$1 = /** @class */ (function () {
         else {
             warn("No suitable source found for feeding by id " + sourceId);
         }
+    };
+    JScada.prototype._subscribe = function (tag, observable) {
+        var _this = this;
+        debug("Subscribe tag " + tag.id);
+        return observable.subscribe(function (data) {
+            if (tag._mounter === undefined) {
+                tag._mounter = new Mounter(tag.id, tag.type, tag.selector, _this._DOM);
+            }
+            try {
+                data = pluck(data, tag.projector || tag.path);
+            }
+            catch (e) {
+                error(e);
+                return;
+            }
+            tag._mounter.mount(data);
+        });
     };
     return JScada;
 }());

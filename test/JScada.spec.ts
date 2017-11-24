@@ -96,6 +96,7 @@ describe('JScada', () => {
   it('can be constructed', () => {
 
     let inst = new JScada({
+      svg: '#svg',
       sources: [],
     })
     expect(inst.constructor === JScada).to.be.true
@@ -106,11 +107,12 @@ describe('JScada', () => {
 
     let startSpy = spy(JScada.prototype, 'start')
 
-    let inst1 = new JScada({ sources: [] })
+    let inst1 = new JScada({ svg: '#svg', sources: [] })
     expect(startSpy.calledOnce).to.be.false
 
     let inst2 = new JScada({
       autoStart: true,
+      svg: '#svg',
       sources: [],
     })
     expect(startSpy.calledOnce).to.be.true
@@ -120,6 +122,7 @@ describe('JScada', () => {
   it('set "readyState" flag to 1 after start()', () => {
 
     let inst = new JScada({
+      svg: '#svg',
       autoStart: true,
       sources: [],
     })
@@ -130,6 +133,7 @@ describe('JScada', () => {
   it('set "readyState" flag to 2 after suspend()', () => {
 
     let inst = new JScada({
+      svg: '#svg',
       autoStart: true,
       sources: [],
     })
@@ -141,6 +145,7 @@ describe('JScada', () => {
   it('set "readyState" flag to 3 after close()', () => {
 
     let inst = new JScada({
+      svg: '#svg',
       autoStart: true,
       sources: [],
     })
@@ -170,7 +175,8 @@ describe('JScada', () => {
     it('should accept http source', () => {
 
       instance = new JScada({
-        autoStart: true,
+      svg: '#svg',
+      autoStart: true,
         sources: [httpSource],
       })
       expect(instance.readyState).to.be.eq(1)
@@ -180,6 +186,7 @@ describe('JScada', () => {
     it('should accept http source, update the dom correctly', (done) => {
 
       instance = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [httpSource],
       })
@@ -194,6 +201,7 @@ describe('JScada', () => {
     it('should accept http source, update the dom correctly, repeatly', (done) => {
 
       instance = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [httpSource],
       })
@@ -218,6 +226,7 @@ describe('JScada', () => {
       _httpSource.tags[0].selector = 'text'
 
       instance = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [_httpSource],
       })
@@ -251,6 +260,7 @@ describe('JScada', () => {
     it('should accept websocket source', () => {
 
       let inst = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [webSocketSource],
       })
@@ -261,6 +271,7 @@ describe('JScada', () => {
     it('should accept websocket source, update the dom correctly', () => {
 
       let inst = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [webSocketSource],
       })
@@ -295,6 +306,7 @@ describe('JScada', () => {
     it('should accept Mqtt source', () => {
 
       let inst = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [ mqttSource ],
       })
@@ -305,6 +317,7 @@ describe('JScada', () => {
     it('should accept Mqtt source, update the dom correctly', (done) => {
 
       let inst = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [ mqttSource ],
       })
@@ -334,6 +347,7 @@ describe('JScada', () => {
     it ('should accept Manual source, update the dom correctly', () => {
 
       let inst = new JScada({
+        svg: '#svg',
         autoStart: true,
         sources: [ manualSource ],
       })

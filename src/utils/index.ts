@@ -1,4 +1,5 @@
 import get from 'lodash.get'
+import { warn } from './logging'
 
 export * from './logging'
 export * from './typeGuards'
@@ -20,4 +21,22 @@ export function pluck(data: any, projectorOrPath?: ((i: any) => any) | string | 
   }
 
   return data
+}
+
+export function getSvgDOM(ele: any) {
+
+  if (ele === null) {
+    warn('No svg document found, use "document" as default')
+    return document
+  }
+
+  if (ele.tagName === 'svg') {
+    return ele
+  }
+
+  if (ele.tagName === 'embed') {
+    return (<HTMLEmbedElement> ele).getSVGDocument()
+  }
+
+  return document
 }
