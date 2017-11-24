@@ -34,7 +34,7 @@ export function getSvgDOM(ele: any) {
     return ele
   }
 
-  if (ele.tagName === 'embed') {
+  if (ele.tagName === 'EMBED') {
     return (<HTMLEmbedElement> ele).getSVGDocument()
   }
 

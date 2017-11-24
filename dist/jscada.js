@@ -2436,7 +2436,7 @@ function getSvgDOM(ele) {
     if (ele.tagName === 'svg') {
         return ele;
     }
-    if (ele.tagName === 'embed') {
+    if (ele.tagName === 'EMBED') {
         return ele.getSVGDocument();
     }
     return document;
