@@ -24,9 +24,9 @@ describe('Mounter', () => {
 
   })
 
-  it('can be instantiated by helper method: from', () => {
+  it('can take customized DOM', () => {
 
-    let mounter = Mounter.from({ id: 'id', type: ActionType.fill })
+    let mounter = new Mounter('id', ActionType.fill, undefined, $('#svg')[0])
     expect(mounter).to.be.not.null
 
   })
@@ -50,6 +50,16 @@ describe('Mounter', () => {
   it('can take selector instead of id if specified', () => {
 
     let mounter = new Mounter('some-id', ActionType.fill, 'circle')
+    mounter.mount('#333')
+    $('circle').each((i, node) => {
+      expect($(node).attr('fill')).to.be.eq('#333')
+    })
+
+  })
+
+  it('can work with customized DOM', () => {
+
+    let mounter = new Mounter('some-id', ActionType.fill, 'circle', $('#svg')[0])
     mounter.mount('#333')
     $('circle').each((i, node) => {
       expect($(node).attr('fill')).to.be.eq('#333')

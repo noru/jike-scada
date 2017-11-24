@@ -1,25 +1,19 @@
 import { warn, isNodeList } from './utils'
 import Actions, { ActionType, Action } from './Actions'
 
-export interface Option {
-  id: string,
-  type: ActionType,
-  selector?: string,
-}
-
 type _Element = HTMLElement | NodeListOf<HTMLElement> | null
 
 export default class Mounter {
-
-  static from({ id, type, selector }: Option) {
-    return new Mounter(id, type, selector)
-  }
 
   private _element: _Element
   private _self: Mounter
   private _action: Action | undefined
 
-  constructor(public id: string, public type: ActionType, public selector?: string) {
+  constructor(
+    public id: string,
+    public type: ActionType,
+    public selector?: string,
+    private _document: Document = document) {
     this._action = Actions[this.type]
   }
 
@@ -42,12 +36,12 @@ export default class Mounter {
   private _ensureElement = () => {
 
     if (!this._isElementValid(this._element)) {
-      let { id, selector } = this
-      this._element = selector ? <NodeListOf<HTMLElement>> document.querySelectorAll(selector)
-                               : document.getElementById(id)
+      let { id, selector, _document } = this
+      this._element = selector ? <NodeListOf<HTMLElement>> _document.querySelectorAll(selector)
+                               : _document.getElementById(id)
     }
     if (!this._isElementValid(this._element)) {
-      throw Error(`Invalid mount point selector or id: ${this.selector}/${this.id}, cannot find the target element`)
+      throw Error(`Invalid mount point id or selector: ${this.id}/${this.selector}, cannot find the target element`)
     }
 
   }
