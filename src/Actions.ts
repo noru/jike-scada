@@ -55,12 +55,21 @@ const Actions: Actions = {
 
     if (isContainer(node)) {
       node.querySelectorAll(SHAPE_SELECTOR + ',' + TEXT_SELECTOR)
-          .forEach(n => n.setAttribute('fill', data))
+          .forEach(n => Actions[T.fill](n as HTMLElement, data))
       return
     }
 
     if (isText(node) || isSHAPE(node)) {
-      node.setAttribute('fill', data)
+      let style = node.getAttribute('style') || ''
+      let styleObj = style.split(';').reduce((result, current) => {
+        let [key, value] = current.split(':')
+        if (value !== undefined) {
+          result[key.trim()] = value.trim()
+        }
+        return result
+      } , {})
+      styleObj['fill'] = data
+      node.setAttribute('style', Object.keys(styleObj).map(key => `${key}:${styleObj[key]}`).join(';'))
     } else {
       warn(`Tag <${node.tagName}> doen't support 'fill' attribute. It has to be a text/shape element.`)
     }

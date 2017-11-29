@@ -43,7 +43,7 @@ describe('Mounter', () => {
 
     let mounter = new Mounter('shape', ActionType.fill)
     mounter.mount('#333')
-    expect($('#shape').attr('fill')).to.be.eq('#333')
+    expect($('#shape').attr('style')).to.contains('fill:#333')
 
   })
 
@@ -52,7 +52,7 @@ describe('Mounter', () => {
     let mounter = new Mounter('some-id', ActionType.fill, 'circle')
     mounter.mount('#333')
     $('circle').each((i, node) => {
-      expect($(node).attr('fill')).to.be.eq('#333')
+      expect($(node).attr('style')).to.contains('fill:#333')
     })
 
   })
@@ -62,7 +62,7 @@ describe('Mounter', () => {
     let mounter = new Mounter('some-id', ActionType.fill, 'circle', $('#svg')[0])
     mounter.mount('#333')
     $('circle').each((i, node) => {
-      expect($(node).attr('fill')).to.be.eq('#333')
+      expect($(node).attr('style')).to.contains('fill:#333')
     })
 
   })

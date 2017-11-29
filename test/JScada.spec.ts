@@ -192,7 +192,7 @@ describe('JScada', () => {
       })
       setTimeout(function() {
         expect($('#text').text()).to.eq(_respondStub.text)
-        expect($('#shape').attr('fill')).to.eq(_respondStub.color)
+        expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
         done()
       }, 120)
 
@@ -281,10 +281,10 @@ describe('JScada', () => {
       socket.triggerMessage(JSON.stringify(_respondStub))
 
       expect($('#text').text()).to.eq(_respondStub.text)
-      expect($('#shape').attr('fill')).to.eq(_respondStub.color)
+      expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
 
       socket.triggerMessage(JSON.stringify(_respondStub).replace('#FFF', '#AAA'))
-      expect($('#shape').attr('fill')).to.eq('#AAA')
+      expect($('#shape').attr('style')).to.contains('fill:#AAA')
 
     })
 
@@ -326,19 +326,19 @@ describe('JScada', () => {
 
       setTimeout(function() {
         expect($('#text').text()).to.eq(_respondStub.text)
-        expect($('#shape').attr('fill')).to.eq(_respondStub.color)
+        expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
         mqttClient.publish('topic1', JSON.stringify(_respondStub).replace('#FFF', '#AAA'), { qos: 1 })
       }, 2000)
 
       setTimeout(function() {
         expect($('#text').text()).to.eq(_respondStub.text)
-        expect($('#shape').attr('fill')).to.eq('#AAA')
+        expect($('#shape').attr('style')).to.contains('fill:#AAA')
         done()
       }, 4000)
 
       inst.close()
 
-    }).timeout(5000)
+    }).timeout(6000)
 
   })
 
@@ -357,7 +357,7 @@ describe('JScada', () => {
 
       inst.feed('manual-source', _respondStub)
       expect($('#text').text()).to.eq(_respondStub.text)
-      expect($('#shape').attr('fill')).to.eq(_respondStub.color)
+      expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
     })
 
   })

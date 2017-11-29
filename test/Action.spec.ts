@@ -25,15 +25,15 @@ describe('Actions', () => {
 
     let text = $el.find('text')
     Actions[ActionType.fill](text[0], '#333')
-    expect(text.attr('fill')).to.eq('#333')
+    expect(text.attr('style')).to.contains('fill:#333')
 
     let shape = $el.find('circle')
     Actions[ActionType.fill](shape[0], '#333')
-    expect(shape.attr('fill')).to.eq('#333')
+    expect(shape.attr('style')).to.contains('fill:#333')
 
     let nonSupport = $el.find('image')
     Actions[ActionType.fill](nonSupport[0], '#333')
-    expect(nonSupport.attr('fill')).to.not.eq('#333')
+    expect(nonSupport.attr('style')).to.be.undefined
 
   })
 
@@ -42,7 +42,7 @@ describe('Actions', () => {
     Actions[ActionType.fill](el, '#333')
     $el.children().each((i, node) => {
       if (node.tagName !== 'image') {
-        expect($(node).attr('fill')).to.eq('#333')
+        expect($(node).attr('style')).to.contains('fill:#333')
       }
     })
 

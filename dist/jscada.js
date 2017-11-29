@@ -7520,11 +7520,20 @@ var Actions = (_a = {},
     _a[T.fill] = function (node, data) {
         if (isContainer(node)) {
             node.querySelectorAll(SHAPE_SELECTOR + ',' + TEXT_SELECTOR)
-                .forEach(function (n) { return n.setAttribute('fill', data); });
+                .forEach(function (n) { return Actions[T.fill](n, data); });
             return;
         }
         if (isText(node) || isSHAPE(node)) {
-            node.setAttribute('fill', data);
+            var style = node.getAttribute('style') || '';
+            var styleObj_1 = style.split(';').reduce(function (result, current) {
+                var _a = current.split(':'), key = _a[0], value = _a[1];
+                if (value !== undefined) {
+                    result[key.trim()] = value.trim();
+                }
+                return result;
+            }, {});
+            styleObj_1['fill'] = data;
+            node.setAttribute('style', Object.keys(styleObj_1).map(function (key) { return key + ":" + styleObj_1[key]; }).join(';'));
         }
         else {
             warn("Tag <" + node.tagName + "> doen't support 'fill' attribute. It has to be a text/shape element.");

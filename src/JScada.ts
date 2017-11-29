@@ -166,6 +166,7 @@ export class JScada {
 
     debug(`Subscribe tag ${tag.id}`)
     return observable.subscribe(data => {
+
       if (tag._mounter === undefined) {
         tag._mounter = new Mounter(tag.id, tag.type, tag.selector, this._DOM)
       }
