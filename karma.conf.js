@@ -16,6 +16,7 @@ module.exports = function(config) {
         validateSyntax: false,
         sourceMap: true,
         noParse: ['mqtt/dist/mqtt.min'],
+        transforms: [require("karma-typescript-es6-transform")()],
       },
       compilerOptions: {
         allowJs: true,

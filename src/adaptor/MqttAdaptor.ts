@@ -1,7 +1,8 @@
 import { Adaptor } from './Adaptor'
 import { Observable, Subject } from '../modules/rxjs'
 import * as mqtt from 'mqtt/dist/mqtt.min'
-import { warn, debug, identity } from '../utils'
+import { warn, debug } from '../utils'
+import { identity, noop } from 'xz-utils/lib/func'
 
 interface Topic {
   name: string,
@@ -10,6 +11,7 @@ interface Topic {
 
 export default class MqttAdaptor<T> implements Adaptor<T> {
 
+  static _connectionCount = 0
   // tslint:disable-next-line:member-ordering
   static _defaultTopic = {
     name: '#',
@@ -29,9 +31,10 @@ export default class MqttAdaptor<T> implements Adaptor<T> {
     topics.forEach(t => this._topics[t.name] = t.projector || identity)
   }
 
-  connect() {
+  connect(cb = noop) {
     this._client = mqtt.connect(this._url, {
-      clientId: 'jscada_' + this._url,
+      clientId: `jscada${MqttAdaptor._connectionCount++}_${this._url}}`,
+      keepalive: 0,
     })
     for (let t in this._topics) {
       debug('Subscribe topic: ' + t)
@@ -44,6 +47,9 @@ export default class MqttAdaptor<T> implements Adaptor<T> {
         payload: JSON.parse(payload.toString()),
       })
     })
+
+    this._client.on('connect', cb)
+
     return this._mqtt$
   }
 

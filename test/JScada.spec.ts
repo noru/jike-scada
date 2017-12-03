@@ -14,6 +14,7 @@ const _respondStub = {
 describe('JScada', () => {
 
   let server: SinonFakeServer
+  let instance
   let removeSvg
   let manualSource = {
     id: 'manual-source',
@@ -91,15 +92,16 @@ describe('JScada', () => {
 
   afterEach(() => {
     removeSvg()
+    instance && instance.close()
   })
 
   it('can be constructed', () => {
 
-    let inst = new JScada({
+    instance = new JScada({
       svg: '#svg',
       sources: [],
     })
-    expect(inst.constructor === JScada).to.be.true
+    expect(instance.constructor === JScada).to.be.true
 
   })
 
@@ -116,47 +118,46 @@ describe('JScada', () => {
       sources: [],
     })
     expect(startSpy.calledOnce).to.be.true
-
+    inst1.close()
+    inst2.close()
   })
 
   it('set "readyState" flag to 1 after start()', () => {
 
-    let inst = new JScada({
+    instance = new JScada({
       svg: '#svg',
       autoStart: true,
       sources: [],
     })
-    expect(inst.readyState).to.be.eq(1)
+    expect(instance.readyState).to.be.eq(1)
 
   })
 
   it('set "readyState" flag to 2 after suspend()', () => {
 
-    let inst = new JScada({
+    instance = new JScada({
       svg: '#svg',
       autoStart: true,
       sources: [],
     })
-    inst.suspend()
-    expect(inst.readyState).to.be.eq(2)
+    instance.suspend()
+    expect(instance.readyState).to.be.eq(2)
 
   })
 
   it('set "readyState" flag to 3 after close()', () => {
 
-    let inst = new JScada({
+    instance = new JScada({
       svg: '#svg',
       autoStart: true,
       sources: [],
     })
-    inst.close()
-    expect(inst.readyState).to.be.eq(3)
+    instance.close()
+    expect(instance.readyState).to.be.eq(3)
 
   })
 
   describe('Http Source', () => {
-
-    let instance
 
     beforeEach(() => {
 
@@ -167,9 +168,7 @@ describe('JScada', () => {
     })
 
     afterEach(() => {
-
       server.restore()
-      instance.close()
     })
 
     it('should accept http source', () => {
@@ -213,7 +212,7 @@ describe('JScada', () => {
       })
 
       setTimeout(function() {
-        expect(count).to.eq(10)
+        expect(count).to.gte(10)
         done()
       }, 1010)
 
@@ -259,18 +258,18 @@ describe('JScada', () => {
 
     it('should accept websocket source', () => {
 
-      let inst = new JScada({
+      instance = new JScada({
         svg: '#svg',
         autoStart: true,
         sources: [webSocketSource],
       })
-      expect(inst.readyState).to.be.eq(1)
+      expect(instance.readyState).to.be.eq(1)
 
     })
 
     it('should accept websocket source, update the dom correctly', () => {
 
-      let inst = new JScada({
+      instance = new JScada({
         svg: '#svg',
         autoStart: true,
         sources: [webSocketSource],
@@ -296,49 +295,52 @@ describe('JScada', () => {
     let mqttClient
 
     beforeEach(() => {
-      mqttClient = mqtt.connect(brokerUrl)
+      mqttClient = mqtt.connect(brokerUrl, { clientId: 'publisher' })
     })
 
     afterEach(() => {
-      mqttClient.end()
+      mqttClient.end(true)
     })
 
     it('should accept Mqtt source', () => {
 
-      let inst = new JScada({
+      instance = new JScada({
         svg: '#svg',
         autoStart: true,
         sources: [ mqttSource ],
       })
-      expect(inst.readyState).to.be.eq(1)
+      expect(instance.readyState).to.be.eq(1)
 
     })
 
     it('should accept Mqtt source, update the dom correctly', (done) => {
 
-      let inst = new JScada({
+      instance = new JScada({
         svg: '#svg',
         autoStart: true,
         sources: [ mqttSource ],
       })
 
-      mqttClient.publish('topic1', JSON.stringify(_respondStub), { qos: 1 })
+      // FIXME: connection may establish asynchronously, and JScada constructor doesn't consider it
+      setTimeout(() => {
+        mqttClient.publish('topic', JSON.stringify(_respondStub), { qos: 1 })
 
-      setTimeout(function() {
-        expect($('#text').text()).to.eq(_respondStub.text)
-        expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
-        mqttClient.publish('topic1', JSON.stringify(_respondStub).replace('#FFF', '#AAA'), { qos: 1 })
-      }, 2000)
+        setTimeout(function() {
+          expect($('#text').text()).to.eq(_respondStub.text)
+          expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
+          mqttClient.publish('#', JSON.stringify(_respondStub).replace('#FFF', '#AAA'), { qos: 1 })
+          done()
+        }, 500)
 
-      setTimeout(function() {
-        expect($('#text').text()).to.eq(_respondStub.text)
-        expect($('#shape').attr('style')).to.contains('fill:#AAA')
-        done()
-      }, 4000)
+        setTimeout(function() {
+          expect($('#text').text()).to.eq(_respondStub.text)
+          expect($('#shape').attr('style')).to.contains('fill:#AAA')
+          done()
+        }, 1000)
 
-      inst.close()
+      }, 1000)
 
-    }).timeout(6000)
+    }).timeout(2100)
 
   })
 
@@ -358,6 +360,8 @@ describe('JScada', () => {
       inst.feed('manual-source', _respondStub)
       expect($('#text').text()).to.eq(_respondStub.text)
       expect($('#shape').attr('style')).to.contains('fill:' + _respondStub.color)
+
+      inst.close()
     })
 
   })

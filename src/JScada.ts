@@ -1,4 +1,5 @@
-import { isUndefinedOrEmpty, warn, error, debug, debugOn, pluck, getSvgDOM } from './utils'
+import { warn, error, debug, debugOn, pluck, getSvgDOM } from './utils'
+import { isNullOrEmpty } from 'xz-utils/lib/array'
 import { HttpAdaptor, WebSocketAdaptor, MqttAdaptor, Adaptor } from './adaptor'
 import { Observable, Subscription } from './modules/rxjs'
 import Mounter from './Mounter'
@@ -92,7 +93,7 @@ export class JScada {
 
     merge(this._opt, options)
 
-    if (isUndefinedOrEmpty(options.sources)) {
+    if (isNullOrEmpty(options.sources)) {
       warn(`No sources assigned. Nothing would happen. Option: ${JSON.stringify(this._opt)}`)
     }
 
@@ -134,11 +135,12 @@ export class JScada {
     })
 
     this._readyState = RS.READY
-    debug(`JScada instance ${this._opt.id} started`)
+    debug(`Instance ${this._opt.id} started`)
   }
 
   suspend() {
     // todo stub
+    debug(`Instance ${this._opt.id} suspended`)
     this._readyState = RS.SUSPENDED
   }
 
@@ -149,6 +151,7 @@ export class JScada {
       source.subscriptions.forEach(sub => sub.unsubscribe())
     }
     this._readyState = RS.CLOSED
+    debug(`Instance ${this._opt.id} closed`)
   }
 
   feed(sourceId: string, data: any) {
@@ -165,19 +168,23 @@ export class JScada {
   private _subscribe(tag: Tag, observable: Observable<any>): Subscription {
 
     debug(`Subscribe tag ${tag.id}`)
-    return observable.subscribe(data => {
+    return observable.subscribe(
+      data => {
 
-      if (tag._mounter === undefined) {
-        tag._mounter = new Mounter(tag.id, tag.type, tag.selector, this._DOM)
-      }
-      try {
-        data = pluck(data, tag.projector || tag.path)
-      } catch (e) {
-        error(e)
-        return
-      }
-      tag._mounter.mount(data)
-    })
+        if (tag._mounter === undefined) {
+          tag._mounter = new Mounter(tag.id, tag.type, tag.selector, this._DOM)
+        }
+        try {
+          data = pluck(data, tag.projector || tag.path)
+        } catch (e) {
+          error(e)
+          return
+        }
+        tag._mounter.mount(data)
+      },
+
+      e => error(e),
+    )
 
   }
 

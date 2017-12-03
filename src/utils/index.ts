@@ -4,12 +4,6 @@ import { warn } from './logging'
 export * from './logging'
 export * from './typeGuards'
 
-export function identity(self) { return self }
-
-export function isUndefinedOrEmpty(arr: any[] | undefined | null) {
-  return arr === null || arr === undefined || arr.length === 0
-}
-
 export function pluck(data: any, projectorOrPath?: ((i: any) => any) | string | undefined) {
 
   if (typeof projectorOrPath === 'function') {

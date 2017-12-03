@@ -57,7 +57,7 @@ describe('HttpAdapter', () => {
       count++
     })
     setTimeout(() => {
-      expect(count).to.be.eq(10)
+      expect(count).to.be.gte(10)
       done()
     }, 1010)
   })

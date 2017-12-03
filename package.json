@@ -21,6 +21,7 @@
     "karma-mocha": "^1.3.0",
     "karma-safari-launcher": "^1.0.0",
     "karma-typescript": "^3.0.7",
+    "karma-typescript-es6-transform": "^1.0.2",
     "lodash": "^4.17.4",
     "mocha": "^3.5.0",
     "rollup": "^0.49.2",
@@ -36,8 +37,9 @@
     "es6-set": "^0.1.5",
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.0",
-    "mqtt": "^2.13.0",
+    "mqtt": "^2.14.0",
     "nodelist-foreach-polyfill": "^1.2.0",
-    "rxjs": "^5.4.3"
+    "rxjs": "^5.5.3",
+    "xz-utils": "github:noru/utils"
   }
 }

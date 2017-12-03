@@ -3,26 +3,26 @@ import * as mqtt from 'mqtt/dist/mqtt.min'
 
 describe('MqttAdaptor', () => {
 
-  let webSocketAdapter
+  let mqttAdaptor
   const brokerUrl = 'ws://localhost:3000'
   // const brokerUrl = 'ws://broker.hivemq.com:8000'
   // const brokerUrl = 'ws://test.mosquitto.org:8080'
 
   afterEach(() => {
-    webSocketAdapter.disconnect()
+    mqttAdaptor.disconnect()
   })
 
   it('can be instantiated', () => {
 
-    webSocketAdapter = new MqttAdaptor(brokerUrl, [{ name: 'topic1' }])
-    expect(webSocketAdapter.constructor === MqttAdaptor).to.be.true
+    mqttAdaptor = new MqttAdaptor(brokerUrl, [{ name: 'topic1' }])
+    expect(mqttAdaptor.constructor === MqttAdaptor).to.be.true
 
   })
 
   it('can connect', () => {
 
-    webSocketAdapter = new MqttAdaptor(brokerUrl, [{ name: 'topic1' }])
-    let subj$ = webSocketAdapter.connect()
+    mqttAdaptor = new MqttAdaptor(brokerUrl, [{ name: 'topic1' }])
+    let subj$ = mqttAdaptor.connect()
     expect(subj$).to.be.not.undefined
 
   })
@@ -38,27 +38,29 @@ describe('MqttAdaptor', () => {
         done()
       }
     })
-    setTimeout(function() {
-      client.publish('topic2', 'test', { qos: 1 })
-    }, 1000)
+    client.publish('topic2', 'test', { qos: 1 })
 
   })
 
   it('can receive message from server', (done) => {
 
     let client = mqtt.connect(brokerUrl)
-    webSocketAdapter = new MqttAdaptor(brokerUrl, [{ name: 'topic3' }])
-    let subj$ = webSocketAdapter.connect()
-    subj$.subscribe(msg => {
-      expect(msg.topic).to.eq('topic3')
-      expect(msg.payload).to.be.eq('test')
-      client.end()
-      webSocketAdapter.disconnect()
-      done()
+
+    client.on('connect', () => {
+
+      mqttAdaptor = new MqttAdaptor(brokerUrl, [{ name: 'topic3' }])
+      let subj$ = mqttAdaptor.connect(() => {
+        client.publish('topic3', JSON.stringify('test'), { qos: 1 })
+      })
+      subj$.subscribe(msg => {
+        expect(msg.topic).to.eq('topic3')
+        expect(msg.payload).to.be.eq('test')
+        client.end()
+        mqttAdaptor.disconnect()
+        done()
+      })
+
     })
-    setTimeout(function() {
-      client.publish('topic3', JSON.stringify('test'), { qos: 1 })
-    }, 1000)
 
   })
 
