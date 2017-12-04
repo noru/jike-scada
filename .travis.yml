@@ -15,5 +15,8 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 
+before_script:
+- npm run broker
+
 after_success:
 - bash travis/commit.sh
