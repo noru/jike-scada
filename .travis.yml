@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '8'
+env:
+  global:
+  - secure: DGiwkAKVUXu3kzl2Ks1dr+sXhai/Ub+oHosbd6Zf5YqNfH7WjrbosbflGGt6Z6P0Sz6UUclF7LA6xHtrASBu9Wi7DZN8pVkc0Dxj4zf7G9dL5UYMtfd7VOL8HGMHONxKMGugnKpTTPtEg2y202jn+S+ytV822EvP0duo1X6xekqsE1o4uOmmV9Squ38naB4QZNRW1XAUyk31+bTAWUNuVS9EbT8A4UpwXIAgNdfnCuaEqtO/+gUhvVRIX4FTJ4O3zAOW5xXuGAbCX/f6D1jQAwaUuzDM3s4uVPYbkl4guKD5LioyWUAFlZ+8pX0pIbIalSY8XbQ5vDCvF4w9EBG+jSQ8BlZj0QsK6HBv0DPrhPBdns9rtaan/KLMxMVqcRtkxo850kZDLf2vdub/ieIkTnygU2iQmZcgDo1jf3UipV914giXsHiW49mbsn8f9ppWE+jArSmzsgsTzxRkg+ITMV/1TMzAJ+LhMcGU58jIp1j/bsohNdOnmyI4lGSKODauCeFRRuGfjsHIRJWGUBWDEuYGo8iSY/8L2WeBp08yspuf+6LvynGZS2c0e9sTt2zcFs7SILLGp4ZlFwsk/Ji1RWSGULKFQHgxpt3c4gakfR2BWFaeDRSqq2lwBCC+yWEezapPD3DeoxlcDNGo8VEYGXYbUZme5rJmGVIcciwjnYg=
+
+dist: trusty
+sudo: false
+
+addons:
+  chrome: stable
+
+before_install:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+
+after_success:
+- bash travis/commit.sh
