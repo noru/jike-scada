@@ -6,7 +6,7 @@
   "scripts": {
     "dist": "rollup -c",
     "test": "karma start",
-    "broker": "mosca -v --http-port 3000 --only-http"
+    "broker": "mosca -v --http-port 3000 --only-http &"
   },
   "author": "xiuzhu",
   "license": "ISC",
