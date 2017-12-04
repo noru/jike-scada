@@ -1,5 +1,7 @@
 # Jike-scada
 
+[![Build Status](https://travis-ci.org/noru/jike-scada.svg?branch=master)](https://travis-ci.org/noru/jike-scada)
+
 ![sample](./example.gif)
 
 ## Install
