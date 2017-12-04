@@ -1,6 +1,7 @@
 # Jike-scada
 
 [![Build Status](https://travis-ci.org/noru/jike-scada.svg?branch=master)](https://travis-ci.org/noru/jike-scada)
+[![Coverage Status](https://coveralls.io/repos/github/noru/jike-scada/badge.svg?branch=master)](https://coveralls.io/github/noru/jike-scada?branch=master)
 
 ![sample](./example.gif)
 
