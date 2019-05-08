@@ -2436,7 +2436,13 @@ function getSvgDOM(ele) {
         return ele;
     }
     if (ele.tagName === 'EMBED') {
-        return function () { return ele.getSVGDocument(); };
+        return function () {
+            var svgDoc = ele.getSVGDocument();
+            if (!svgDoc) {
+                throw new Error('No svg document found. Make sure the embed element contains valid svg and CORS rules are correctly set. ');
+            }
+            return svgDoc;
+        };
     }
     return document;
 }
