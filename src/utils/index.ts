@@ -29,7 +29,13 @@ export function getSvgDOM(ele: any) {
   }
 
   if (ele.tagName === 'EMBED') {
-    return () => (<HTMLEmbedElement> ele).getSVGDocument()
+    return () => {
+      let svgDoc = (<HTMLEmbedElement> ele).getSVGDocument()
+      if (!svgDoc) {
+        throw new Error('No svg document found. Make sure the embed element contains valid svg and CORS rules are correctly set. ')
+      }
+      return svgDoc
+    }
   }
 
   return document
