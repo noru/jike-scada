@@ -39,7 +39,7 @@
   "dependencies": {
     "es6-set": "^0.1.5",
     "lodash.get": "^4.4.2",
-    "lodash.merge": "^4.6.0",
+    "lodash.merge": "^4.6.2",
     "mqtt": "^2.14.0",
     "nodelist-foreach-polyfill": "^1.2.0",
     "rxjs": "^5.5.3",
