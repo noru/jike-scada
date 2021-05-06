@@ -1,6 +1,6 @@
 {
   "name": "jike-scada",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "dist/jscada.min.js",
   "scripts": {
