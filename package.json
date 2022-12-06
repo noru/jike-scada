@@ -16,7 +16,7 @@
     "@types/node": "^8.0.28",
     "chai": "^4.1.2",
     "jquery": "^3.2.1",
-    "karma": "^1.7.1",
+    "karma": "^6.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coveralls": "^1.1.2",
